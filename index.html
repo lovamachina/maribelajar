@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="data:," />
+<title>Matematika Interaktif — Modul B1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#f4f2ec; --surface:#fffdf8; --surface2:#eceadf; --ink:#1d2420; --ink-soft:#4c554f;
+    --line:#d9d4c4; --teal:#0e6b5c; --teal-soft:#dcefe9; --amber:#b45309; --amber-soft:#fbeed3;
+    --red:#b3362b; --red-soft:#fbe7e3; --green:#177245; --green-soft:#e0f2e4;
+    --radius:14px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#131714; --surface:#1c211d; --surface2:#262c27; --ink:#ece9df; --ink-soft:#a9b3ab;
+      --line:#39413a; --teal:#4cc2ab; --teal-soft:#173b33; --amber:#e8a34c; --amber-soft:#3d2f14;
+      --red:#ef8a7d; --red-soft:#40231f; --green:#6fce97; --green-soft:#17301f;
+    }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Plus Jakarta Sans",system-ui,sans-serif;font-size:16px;line-height:1.55}
+  button,[role="button"],select,input:not([type="checkbox"],[type="radio"]){min-height:2.25rem}
+  button{font-family:inherit;cursor:pointer}
+  .mono{font-family:"IBM Plex Mono",monospace}
+  .wrap{max-width:1240px;margin:0 auto;padding:20px 16px 64px}
+
+  /* ---------- header strip ---------- */
+  .crumb{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:.82rem;color:var(--ink-soft);font-weight:600}
+  .crumb b{color:var(--teal)}
+  h1{font-size:clamp(1.55rem,3.4vw,2.3rem);line-height:1.15;margin:10px 0 6px;font-weight:800;letter-spacing:-.01em}
+  .lede{max-width:70ch;color:var(--ink-soft);margin:0 0 14px}
+  .overall{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+  .bar{flex:1;min-width:180px;height:10px;background:var(--surface2);border:1px solid var(--line);border-radius:99px;overflow:hidden}
+  .bar>i{display:block;height:100%;background:var(--teal);width:0%;transition:width .5s ease}
+  .overall .pct{font-weight:700;font-size:.9rem}
+  .overall .note{font-size:.82rem;color:var(--ink-soft)}
+
+  /* ---------- layout ---------- */
+  .layout{display:grid;grid-template-columns:290px 1fr;gap:20px;align-items:start}
+  @media (max-width:900px){.layout{grid-template-columns:1fr}}
+
+  /* ---------- map ---------- */
+  .map{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;position:sticky;top:16px}
+  @media (max-width:900px){.map{position:static}}
+  .map h2{font-size:.8rem;text-transform:uppercase;letter-spacing:.09em;margin:0 0 4px;color:var(--ink-soft)}
+  .map .open-note{font-size:.8rem;color:var(--ink-soft);margin:0 0 12px}
+  .lvl{font-size:.78rem;font-weight:800;color:var(--teal);margin:14px 0 6px;text-transform:uppercase;letter-spacing:.06em}
+  .mod{border:1px solid var(--line);border-radius:10px;margin-bottom:8px;overflow:hidden}
+  .mod-head{display:flex;gap:8px;align-items:baseline;padding:9px 11px;background:var(--surface2);font-size:.88rem;font-weight:700;width:100%;text-align:left;border:0;color:var(--ink)}
+  .mod-head .code{font-family:"IBM Plex Mono",monospace;font-size:.78rem;color:var(--teal);font-weight:600}
+  .mod-head .soon{margin-left:auto;font-size:.7rem;font-weight:600;color:var(--ink-soft);background:var(--surface);border:1px solid var(--line);padding:2px 7px;border-radius:99px;white-space:nowrap}
+  .mod-head .mastered{margin-left:auto;font-size:.7rem;font-weight:700;color:var(--green);white-space:nowrap}
+  .lesson-list{list-style:none;margin:0;padding:6px}
+  .lesson-list li{margin:2px 0}
+  .lbtn{display:flex;gap:9px;align-items:flex-start;width:100%;text-align:left;background:none;border:0;border-radius:8px;padding:8px 9px;font-size:.88rem;color:var(--ink);line-height:1.35}
+  .lbtn:hover{background:var(--surface2)}
+  .lbtn.active{background:var(--teal-soft);font-weight:700}
+  .lbtn .num{font-family:"IBM Plex Mono",monospace;font-size:.75rem;background:var(--surface2);border:1px solid var(--line);border-radius:6px;padding:1px 6px;margin-top:1px;flex:none}
+  .lbtn.active .num{background:var(--surface)}
+  .lbtn .st{margin-left:auto;flex:none;font-size:.72rem;font-weight:700;color:var(--green)}
+  .lbtn .tags{display:block;font-size:.7rem;color:var(--ink-soft);font-weight:500;margin-top:2px}
+
+  /* ---------- lesson area ---------- */
+  .lesson-head{display:flex;flex-wrap:wrap;gap:10px;align-items:baseline;margin-bottom:4px}
+  .lesson-head .code{font-family:"IBM Plex Mono",monospace;color:var(--teal);font-weight:600}
+  .lesson-head h2{font-size:1.45rem;margin:0;font-weight:800}
+  .soft-prereq{font-size:.85rem;color:var(--ink-soft);background:var(--amber-soft);border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin:10px 0 16px}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+  @media (max-width:760px){.cols{grid-template-columns:1fr}}
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+  .panel h3{margin:0 0 10px;font-size:.8rem;text-transform:uppercase;letter-spacing:.09em;color:var(--teal)}
+  .theory p{margin:0 0 12px}
+  .theory p:last-child{margin-bottom:0}
+  .example{background:var(--surface2);border-radius:10px;padding:14px 16px;margin:14px 0}
+  .example .ex-title{font-weight:800;font-size:.82rem;text-transform:uppercase;letter-spacing:.06em;color:var(--amber);margin-bottom:6px}
+  .example p{margin:0 0 6px}
+  .formula{font-family:"IBM Plex Mono",monospace;background:var(--teal-soft);border-radius:8px;padding:10px 14px;margin:12px 0;font-size:1.02rem;text-align:center}
+  .keyidea{border-left:4px solid var(--teal);padding:4px 0 4px 14px;margin:14px 0}
+  .keyidea b{color:var(--teal)}
+
+  /* explorer */
+  .explorer{background:var(--surface2);border-radius:10px;padding:14px 16px;margin:14px 0}
+  .explorer .ex-title{font-weight:800;font-size:.82rem;text-transform:uppercase;letter-spacing:.06em;color:var(--teal);margin-bottom:8px}
+  .explorer label{font-size:.85rem;font-weight:600;display:block;margin:8px 0 2px}
+  .explorer input[type=range]{width:100%;accent-color:var(--teal);min-height:2.25rem}
+  .nl{position:relative;height:44px;margin:10px 0 2px}
+  .nl .track{position:absolute;left:0;right:0;top:20px;height:4px;background:var(--line);border-radius:2px}
+  .nl .tick{position:absolute;top:14px;width:2px;height:16px;background:var(--ink-soft)}
+  .nl .ticklab{position:absolute;top:32px;transform:translateX(-50%);font-size:.68rem;color:var(--ink-soft);font-family:"IBM Plex Mono",monospace}
+  .nl .marker{position:absolute;top:2px;transform:translateX(-50%);width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:12px solid var(--amber)}
+  .gridvis{display:grid;gap:3px;margin:10px 0}
+  .gridvis i{aspect-ratio:1;background:var(--teal);border-radius:3px;opacity:.85}
+  .breakdown{font-family:"IBM Plex Mono",monospace;font-size:.95rem;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-top:8px}
+
+  /* ---------- practice ---------- */
+  .q{border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:14px;background:var(--surface)}
+  .q.done-ok{border-color:var(--green)}
+  .q.done-bad{border-color:var(--red)}
+  .q .qhead{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+  .q .qno{font-family:"IBM Plex Mono",monospace;font-size:.75rem;font-weight:600;background:var(--surface2);border-radius:6px;padding:2px 8px}
+  .q .qtype{font-size:.72rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.05em}
+  .q .qstate{margin-left:auto;font-size:.8rem;font-weight:700}
+  .q .qstate.ok{color:var(--green)} .q .qstate.bad{color:var(--red)}
+  .qask{font-size:1.02rem;margin:0 0 10px}
+  .qask .big{font-family:"IBM Plex Mono",monospace;font-size:1.15rem;font-weight:600}
+  .opts{display:grid;gap:8px}
+  .opt{display:flex;gap:10px;align-items:center;text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-size:.95rem;color:var(--ink);width:100%}
+  .opt:hover{border-color:var(--teal)}
+  .opt.sel{border-color:var(--teal);background:var(--teal-soft);font-weight:600}
+  .opt .key{font-family:"IBM Plex Mono",monospace;font-size:.75rem;border:1px solid var(--line);border-radius:5px;padding:0 6px;background:var(--surface)}
+  .ansrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .ansrow input[type=text],.ansrow input[type=number]{font-family:"IBM Plex Mono",monospace;font-size:1.05rem;padding:8px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);width:150px}
+  .ansrow input:focus,.opt:focus-visible,button:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+  .stepitem{display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+  .stepitem .slab{font-size:.92rem;flex:1;min-width:170px}
+  .stepitem input{font-family:"IBM Plex Mono",monospace;font-size:1rem;padding:7px 10px;border:1.5px solid var(--line);border-radius:9px;background:var(--surface);color:var(--ink);width:120px}
+  .qactions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btn{border-radius:10px;border:1.5px solid var(--teal);background:var(--teal);color:#fff;font-weight:700;font-size:.9rem;padding:8px 16px}
+  @media (prefers-color-scheme: dark){.btn{color:#0d1512}}
+  .btn.ghost{background:transparent;color:var(--teal)}
+  .btn.plain{background:transparent;border-color:var(--line);color:var(--ink-soft)}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .feedback{margin-top:12px;border-radius:10px;padding:11px 14px;font-size:.92rem;display:none}
+  .feedback.show{display:block}
+  .feedback.ok{background:var(--green-soft)}
+  .feedback.bad{background:var(--red-soft)}
+  .feedback .sol{margin-top:6px;font-size:.9rem}
+  .hintbox{margin-top:10px;background:var(--amber-soft);border-radius:10px;padding:11px 14px;font-size:.92rem;display:none}
+  .hintbox.show{display:block}
+  .hintbox .hlvl{font-weight:800;font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--amber)}
+  .qline{margin:6px 0}
+  .qline input[type=range]{width:100%;accent-color:var(--amber)}
+  .qline .cur{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:1.05rem}
+
+  .result{display:none;border-radius:var(--radius);padding:18px 20px;margin-bottom:16px;border:1.5px solid var(--teal);background:var(--teal-soft)}
+  .result.show{display:block}
+  .result h3{margin:0 0 4px;font-size:1.15rem;text-transform:none;letter-spacing:0;color:var(--ink)}
+  .result p{margin:0 0 10px}
+  .practice-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+  footer{margin-top:36px;font-size:.82rem;color:var(--ink-soft);border-top:1px solid var(--line);padding-top:14px}
+  @media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="crumb"><span>Matematika</span> <span>›</span> <span>Level Basic (setara SD)</span> <span>›</span> <b>Modul B1</b></div>
+  <h1>Bilangan &amp; Operasi Dasar</h1>
+  <p class="lede">Modul pertama Matematika Interaktif. Konsepnya dilihat dan diutak-atik dulu, rumusnya datang belakangan. Semua lesson terbuka — boleh mulai dari mana saja, tidak ada yang terkunci. Angka soal diacak setiap kali latihan, jadi jawaban tidak bisa dihafal.</p>
+
+  <div class="overall">
+    <span class="pct" id="overallPct">0 dari 8 bagian dikuasai</span>
+    <div class="bar"><i id="overallBar"></i></div>
+    <span class="note">Status “Dikuasai” = skor ≥ 80% tanpa petunjuk lapis 3. Hanya penanda progres, bukan gerbang.</span>
+  </div>
+
+  <div class="layout">
+    <!-- ============ MAP ============ -->
+    <aside class="map" aria-label="Peta silabus Matematika">
+      <h2>Peta Matematika</h2>
+      <p class="open-note">21 modul · 111 lesson. Semua terbuka, urutan di bawah hanya saran jalur. Modul B1 lengkap bisa dimainkan sekarang; modul lain menyusul.</p>
+      <div id="mapRoot"></div>
+    </aside>
+
+    <!-- ============ LESSON ============ -->
+    <main>
+      <div class="lesson-head">
+        <span class="code" id="lessonCode">B1.1</span>
+        <h2 id="lessonTitle">Nilai Tempat &amp; Garis Bilangan</h2>
+      </div>
+      <div class="soft-prereq" id="prereqBox" style="display:none"></div>
+
+      <div class="result" id="resultBox" role="status"></div>
+
+      <div class="cols">
+        <section class="panel theory" aria-label="Teori">
+          <h3>Teori — baca &amp; utak-atik</h3>
+          <div id="theoryRoot"></div>
+        </section>
+        <section class="panel" aria-label="Latihan">
+          <h3 id="practiceTitle">Latihan — cek instan</h3>
+          <div id="practiceRoot"></div>
+          <div class="practice-actions">
+            <button class="btn" id="finishBtn" type="button">Selesaikan Lesson</button>
+            <button class="btn ghost" id="newSetBtn" type="button">Soal Baru (Angka Diacak Ulang)</button>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <footer>Matematika Interaktif — MVP Modul B1 · Kurikulum evergreen (disusun dari logika materi, bukan kurikulum resmi) · Fisika &amp; Kimia menyusul dengan mesin yang sama · Progres tersimpan selama halaman ini terbuka.</footer>
+</div>
+
+<script>
+/* ================= helpers ================= */
+function ri(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function pick(arr){return arr[ri(0,arr.length-1)];}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=ri(0,i);var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function fmt(n){return n.toLocaleString('id-ID');}
+function gcd(a,b){while(b){var t=a%b;a=b;b=t;}return a;}
+function lcm(a,b){return a*b/gcd(a,b);}
+function factors(n){var f=[];for(var i=1;i<=n;i++)if(n%i===0)f.push(i);return f;}
+function isPrime(n){if(n<2)return false;for(var i=2;i*i<=n;i++)if(n%i===0)return false;return true;}
+function primeFactor(n){var r={},d=2;while(d*d<=n){while(n%d===0){r[d]=(r[d]||0)+1;n/=d;}d++;}if(n>1)r[n]=(r[n]||0)+1;return r;}
+
+/* ================= question model =================
+   type: 'num' | 'pg' | 'steps' | 'line'
+   num:   {answer:Number}
+   pg:    {options:[...], correct:index}
+   steps: {steps:[{label, answer}], }
+   line:  {min,max,answer}
+   common: ask (html), hints [h1,h2,h3], sol (worked solution html), diag (diagnosis when wrong)
+*/
+
+/* ---------- Lesson 1: Nilai tempat & garis bilangan ---------- */
+function g1a(){var n,s,pos,digit,tries=0;do{n=ri(1200,9876);s=String(n);pos=ri(0,3);digit=+s[pos];tries++;}while(s.split(String(digit)).length-1!==1&&tries<60);var places=[['satuan',1],['puluhan',10],['ratusan',100],['ribuan',1000]];var place=places[3-pos];
+  return {type:'num',ask:'Pada bilangan <span class="big">'+fmt(n)+'</span> hanya ada satu angka <span class="big">'+digit+'</span>. Berapa <b>nilai</b> angka '+digit+' itu menurut nilai tempatnya? (Misal angka 3 pada 3.250 bernilai 3000.)',answer:digit*place[1],
+  hints:['Nilai tempat dibaca dari kanan: satuan, puluhan, ratusan, ribuan.','Angka '+digit+' itu berada di tempat '+place[0]+'.','Nilai = angka × nilai tempatnya. Di sini: '+digit+' × '+fmt(place[1])+'.'],
+  sol:'Dari kanan: '+s.split('').reverse().join(', ')+' → angka '+digit+' ada di tempat '+place[0]+', jadi nilainya '+digit+' × '+fmt(place[1])+' = <b>'+fmt(digit*place[1])+'</b>.',
+  diag:'Kemungkinan tertukar antara <i>angka</i> dan <i>nilai</i>. Yang ditanya nilai: angka dikali nilai tempatnya.'};}
+function g1b(){var t=ri(5,95);return {type:'line',min:0,max:100,answer:t,ask:'Geser penanda di garis bilangan sampai tepat di angka <span class="big">'+t+'</span>.',
+  hints:['Garis ini membentang 0 sampai 100. Angka tengahnya 50.','Angka '+t+' itu '+(t<50?'di kiri 50 (paruh pertama).':'di kanan 50 (paruh kedua).'),'Hitung dari tanda terdekat: tiap garis kecil bernilai 5 pada skala kasar, lalu perkirakan posisi pasnya — penanda harus persis di '+t+'.'],
+  sol:'Penanda berhenti tepat di <b>'+t+'</b> pada garis 0–100.',
+  diag:'Posisinya belum tepat. Coba patokan 0, 50, 100 dulu, baru geser perlahan.'};}
+function g1c(){var a=ri(2000,9000),b;do{b=ri(2000,9000);}while(b===a);var big=Math.max(a,b);
+  var opts=shuffle([fmt(a),fmt(b)]);return {type:'pg',ask:'Bilangan mana yang lebih besar?',options:opts,correct:opts.indexOf(fmt(big)),
+  hints:['Bandingkan dari nilai tempat terbesar (ribuan) dulu.','Ribuan: '+String(big)[0]+' vs '+String(Math.min(a,b))[0]+'. Kalau sama, lanjut ke ratusan.','Yang lebih besar adalah '+fmt(big)+' — ribuan/ratusannya menang lebih dulu.'],
+  sol:'Bandingkan digit dari kiri (ribuan → ratusan → puluhan → satuan). Yang lebih besar: <b>'+fmt(big)+'</b>.',
+  diag:'Jangan bandingkan dari satuan. Nilai tempat terbesar yang memutuskan duluan.'};}
+function g1d(){var r=ri(2,9)*1000, h=ri(1,9)*100, p=ri(0,9)*10, s=ri(0,9);var n=r+h+p+s;var miss=pick(['r','h','p']);var parts={r:r,h:h,p:p};var shown={r:fmt(r),h:fmt(h),p:fmt(p)};shown[miss]='…';
+  return {type:'num',ask:'Bentuk panjang dari <span class="big">'+fmt(n)+'</span> adalah '+fmt(r)+' + '+fmt(h)+' + '+fmt(p)+' + '+s+'. Salah satu suku di bawah ini hilang. <span class="big">'+shown.r+' + '+shown.h+' + '+shown.p+' + '+s+'</span> — berapa suku yang hilang?',answer:parts[miss],
+  hints:['Jumlahkan suku yang terlihat, lalu kurangkan dari '+fmt(n)+'.','Suku yang terlihat berjumlah '+fmt(n-parts[miss])+'.','Suku hilang = '+fmt(n)+' − '+fmt(n-parts[miss])+' = '+fmt(parts[miss])+'.'],
+  sol:'Total harus '+fmt(n)+'. Suku terlihat = '+fmt(n-parts[miss])+', jadi yang hilang = <b>'+fmt(parts[miss])+'</b>.',
+  diag:'Bentuk panjang = penjumlahan nilai tiap digit. Kurangkan total dengan jumlah suku yang terlihat.'};}
+function g1e(){var base=ri(3,9)*100;var off=pick([10,20,50,100,200]);var t=base+off;
+  return {type:'num',ask:'Sebuah penanda diletakkan di <span class="big">'+fmt(base)+'</span> pada garis bilangan, lalu digeser <b>'+off+' langkah ke kanan</b>. Di angka berapa penanda berhenti?',answer:t,
+  hints:['Ke kanan berarti bertambah.','Hitung: '+fmt(base)+' + '+off+'.','Hasilnya '+fmt(base)+' + '+off+' = '+fmt(t)+'.'],
+  sol:'Geser ke kanan = tambah: '+fmt(base)+' + '+off+' = <b>'+fmt(t)+'</b>.',
+  diag:'Ke kanan pada garis bilangan artinya nilainya bertambah, bukan berkurang.'};}
+
+/* ---------- Lesson 2: Penjumlahan & pengurangan ---------- */
+function g2a(){var a=ri(248,876),b=ri(135,689);return {type:'num',ask:'Hitung: <span class="big">'+fmt(a)+' + '+fmt(b)+'</span> = ?',answer:a+b,
+  hints:['Jumlahkan per nilai tempat dari kanan: satuan, puluhan, ratusan. Jangan lupa simpanan.','Satuan: '+(a%10)+' + '+(b%10)+' = '+((a%10)+(b%10))+((a%10)+(b%10)>=10?' → tulis '+(((a%10)+(b%10))%10)+', simpan 1.':'') ,'Hasil akhirnya '+fmt(a)+' + '+fmt(b)+' = '+fmt(a+b)+'.'],
+  sol:'Kerjakan dari satuan ke kiri sambil membawa simpanan: '+fmt(a)+' + '+fmt(b)+' = <b>'+fmt(a+b)+'</b>.',
+  diag:'Seringnya simpanan dari kolom sebelumnya terlupa. Cek lagi kolom yang jumlahnya ≥ 10.'};}
+function g2b(){var a=ri(402,950),b=ri(128,389);if(b>a){var t=a;a=b;b=t;}return {type:'num',ask:'Hitung: <span class="big">'+fmt(a)+' − '+fmt(b)+'</span> = ?',answer:a-b,
+  hints:['Kurangkan per nilai tempat dari kanan. Kalau digit atas lebih kecil, pinjam dari kolom sebelah kiri.','Perhatikan kolom yang perlu pinjam: pinjam 1 dari kolom kiri berarti kolom itu berkurang 1 dan kolom ini bertambah 10.','Hasil akhirnya '+fmt(a)+' − '+fmt(b)+' = '+fmt(a-b)+'.'],
+  sol:'Pinjam seperlunya dari kolom kiri: '+fmt(a)+' − '+fmt(b)+' = <b>'+fmt(a-b)+'</b>.',
+  diag:'Biasanya kesalahan ada di pinjam: setelah meminjam, digit pemberi pinjaman harus ikut berkurang 1.'};}
+function g2c(){var start=ri(120,300),buy1=ri(40,110),buy2=ri(25,90);var sisa=start-buy1-buy2;
+  return {type:'steps',ask:'Sinta punya <span class="big">'+start+'</span> koin tabungan. Ia membeli buku seharga <span class="big">'+buy1+'</span> koin, lalu pensil seharga <span class="big">'+buy2+'</span> koin. Kerjakan dua langkah:',
+  steps:[{label:'Langkah 1 — sisa koin setelah membeli buku',answer:start-buy1},{label:'Langkah 2 — sisa koin setelah membeli pensil juga',answer:sisa}],
+  hints:['Kerjakan satu pembelian dulu, jangan langsung mengurangkan dua-duanya sekaligus di kepala.','Setelah buku: '+start+' − '+buy1+' = '+(start-buy1)+'.','Lalu kurangi pensil: '+(start-buy1)+' − '+buy2+' = '+sisa+'.'],
+  sol:'Langkah 1: '+start+' − '+buy1+' = '+(start-buy1)+'. Langkah 2: '+(start-buy1)+' − '+buy2+' = <b>'+sisa+'</b>.',
+  diag:'Cek langkah mana yang meleset: kesalahan di langkah 1 akan terbawa ke langkah 2.'};}
+function g2d(){var tot=ri(500,900),part=ri(150,420);return {type:'num',ask:'Di sebuah keranjang ada <span class="big">'+tot+'</span> jeruk. Sebanyak <span class="big">'+part+'</span> jeruk sudah terjual. Berapa jeruk yang <b>belum</b> terjual? (Angka yang dicari adalah pasangannya: '+part+' + ? = '+tot+')',answer:tot-part,
+  hints:['Ini pengurangan yang menyamar: total dikurangi yang sudah terjual.','Hitung '+tot+' − '+part+'.','Hasilnya '+tot+' − '+part+' = '+(tot-part)+'.'],
+  sol:tot+' − '+part+' = <b>'+(tot-part)+'</b>. Cek balik: '+part+' + '+(tot-part)+' = '+tot+'. ✓',
+  diag:'Kata “belum” menandakan sisanya — itu hasil pengurangan total dengan yang sudah terjual.'};}
+
+/* ---------- Lesson 3: Perkalian ---------- */
+function g3a(){var a=ri(3,6),b=ri(3,6);return {type:'num',grid:{a:a,b:b},ask:'Kotak-kotak di bawah tersusun <span class="big">'+a+'</span> baris × <span class="big">'+b+'</span> kolom. Berapa jumlah seluruh kotak? (Itulah arti '+a+' × '+b+': luas persegi panjang.)',answer:a*b,
+  hints:['Hitung per baris: satu baris ada '+b+' kotak, dan ada '+a+' baris.','Penjumlahan berulang: '+Array(a).fill(b).join(' + ')+'.','Jumlahnya '+a+' × '+b+' = '+(a*b)+'.'],
+  sol:'Tiap baris '+b+' kotak, ada '+a+' baris → '+Array(a).fill(b).join(' + ')+' = <b>'+(a*b)+'</b>.',
+  diag:'Jangan dijumlahkan '+a+' + '+b+'. Perkalian menghitung semua kotak: baris × kolom.'};}
+function g3b(){var a=ri(12,29),b=ri(3,9);return {type:'num',ask:'Hitung: <span class="big">'+a+' × '+b+'</span> = ? (Pecah '+a+' menjadi '+(Math.floor(a/10)*10)+' + '+(a%10)+' bila perlu.)',answer:a*b,
+  hints:['Pecah: '+a+' × '+b+' = ('+(Math.floor(a/10)*10)+' × '+b+') + ('+(a%10)+' × '+b+').',(Math.floor(a/10)*10)+' × '+b+' = '+(Math.floor(a/10)*10*b)+', dan '+(a%10)+' × '+b+' = '+(a%10*b)+'.','Jumlahkan: '+(Math.floor(a/10)*10*b)+' + '+(a%10*b)+' = '+(a*b)+'.'],
+  sol:'('+ (Math.floor(a/10)*10) +' × '+b+') + ('+(a%10)+' × '+b+') = '+(Math.floor(a/10)*10*b)+' + '+(a%10*b)+' = <b>'+(a*b)+'</b>.',
+  diag:'Kalau hasilnya meleset jauh, biasanya yang terkalikan hanya puluhannya saja. Satuan juga harus ikut dikali.'};}
+function g3c(){var a=ri(3,9),b=ri(3,9);var rep=Array(b).fill(a).join(' + ');var tooMany=Array(b+1).fill(a).join(' + ');var opts=shuffle([{t:rep,ok:1},{t:tooMany+' (sukunya kelebihan satu)',ok:0},{t:a+' + '+b+' = '+(a+b)+' (penjumlahan biasa)',ok:0}]);
+  return {type:'pg',ask:'Manakah yang artinya <b>sama persis</b> dengan <span class="big">'+a+' × '+b+'</span>?',options:opts.map(function(o){return o.t;}),correct:opts.findIndex(function(o){return o.ok;}),
+  hints:[a+' × '+b+' artinya angka '+a+' dijumlahkan sebanyak '+b+' kali. Hitung ada berapa suku di tiap pilihan.','Pilihan yang benar punya tepat '+b+' suku, semuanya '+a+'.','Yang benar: '+rep+' = '+(a*b)+'.'],
+  sol:a+' × '+b+' = '+rep+' = <b>'+(a*b)+'</b>. Sukunya harus tepat '+b+' — kelebihan satu saja hasilnya sudah berubah.',
+  diag:'Perkalian adalah penjumlahan berulang dengan jumlah suku yang tepat, bukan penjumlahan biasa dua angka.'};}
+function g3d(){var per=ri(4,9),grup=ri(5,12);return {type:'num',ask:'Satu pak berisi <span class="big">'+per+'</span> permen. Ibu membeli <span class="big">'+grup+'</span> pak. Berapa permen seluruhnya?',answer:per*grup,
+  hints:['Ini penjumlahan berulang: '+per+' dijumlah '+grup+' kali — tulis sebagai perkalian.','Perkaliannya: '+grup+' × '+per+'.','Hasilnya '+grup+' × '+per+' = '+(per*grup)+'.'],
+  sol:grup+' pak × '+per+' permen = <b>'+(per*grup)+'</b> permen.',
+  diag:'Kalikan isi per pak dengan banyak pak — bukan ditambah.'};}
+
+/* ---------- Lesson 4: Pembagian ---------- */
+function g4a(){var b=ri(3,9),q=ri(4,12),a=b*q;return {type:'num',ask:'Hitung: <span class="big">'+a+' ÷ '+b+'</span> = ? (Tanya balik: '+b+' × ? = '+a+')',answer:q,
+  hints:['Pembagian adalah kebalikan perkalian. Cari angka yang dikali '+b+' menghasilkan '+a+'.','Hafalan kali: '+b+' × '+q+' = '+a+' — sudah dekat, tinggal dibalik.','Jadi '+a+' ÷ '+b+' = '+q+'.'],
+  sol:'Karena '+b+' × '+q+' = '+a+', maka '+a+' ÷ '+b+' = <b>'+q+'</b>.',
+  diag:'Jangan menebak — pakai tabel perkalian '+b+' dan cari yang hasilnya '+a+'.'};}
+function g4b(){var grup=ri(3,8),per=ri(4,9),tot=grup*per;return {type:'steps',ask:'Sebanyak <span class="big">'+tot+'</span> kelereng dibagi rata ke <span class="big">'+grup+'</span> anak.',
+  steps:[{label:'Langkah 1 — tiap anak menerima berapa kelereng?',answer:per},{label:'Langkah 2 — cek: '+grup+' anak × isi per anak = ? (harus kembali ke '+tot+')',answer:tot}],
+  hints:['Dibagi rata = pembagian: '+tot+' ÷ '+grup+'.','Tiap anak: '+tot+' ÷ '+grup+' = '+per+'.','Cek balik dengan perkalian: '+grup+' × '+per+' = '+tot+'. ✓'],
+  sol:'Tiap anak: '+tot+' ÷ '+grup+' = <b>'+per+'</b>. Cek: '+grup+' × '+per+' = '+tot+'. ✓',
+  diag:'Kalau langkah 2 tidak kembali ke '+tot+', hasil pembagian di langkah 1 yang keliru.'};}
+function g4c(){var b=ri(4,9),q=ri(5,11),a=b*q;return {type:'num',ask:'Isi kotak kosongnya: <span class="big">□ × '+b+' = '+a+'</span>. Angka berapa yang cocok?',answer:q,
+  hints:['Kotak itu adalah hasil dari '+a+' ÷ '+b+'.','Hitung '+a+' ÷ '+b+'.','Kotaknya = '+q+', karena '+q+' × '+b+' = '+a+'.'],
+  sol:'□ = '+a+' ÷ '+b+' = <b>'+q+'</b>. Perkalian dan pembagian adalah pasangan bolak-balik.',
+  diag:'Kotak kosong di perkalian dicari dengan membagi hasil dengan pengali yang diketahui.'};}
+function g4d(){var a=ri(22,58);var b=ri(3,7);var q=Math.floor(a/b),r=a%b;return {type:'num',ask:'<span class="big">'+a+'</span> stiker dibagi ke kelompok-kelompok berisi <span class="big">'+b+'</span> stiker. Berapa kelompok <b>penuh</b> yang terbentuk? (Sisanya tidak dihitung.)',answer:q,
+  hints:['Cari kelipatan '+b+' terbesar yang tidak melebihi '+a+'.',b+' × '+q+' = '+(b*q)+' (≤ '+a+'), sedangkan '+b+' × '+(q+1)+' = '+(b*(q+1))+' sudah kelebihan.','Kelompok penuh = '+q+', sisanya '+r+' stiker.'],
+  sol:b+' × '+q+' = '+(b*q)+' ≤ '+a+', sisa '+r+'. Kelompok penuh: <b>'+q+'</b>.',
+  diag:'Yang ditanya kelompok <i>penuh</i> — pembagian bersisa dibulatkan ke bawah, bukan ke terdekat.'};}
+
+/* ---------- Lesson 5: Operasi campuran ---------- */
+function g5a(){var a=ri(3,9),b=ri(2,8),c=ri(2,9);return {type:'num',ask:'Hitung: <span class="big">'+a+' + '+b+' × '+c+'</span> = ?',answer:a+b*c,
+  hints:['Urutan operasi: perkalian & pembagian dikerjakan SEBELUM tambah & kurang.','Kerjakan dulu '+b+' × '+c+' = '+(b*c)+'.','Lalu '+a+' + '+(b*c)+' = '+(a+b*c)+'.'],
+  sol:'Kali dulu: '+b+' × '+c+' = '+(b*c)+', lalu tambah: '+a+' + '+(b*c)+' = <b>'+(a+b*c)+'</b>. Kalau dijumlah dulu hasilnya '+( (a+b)*c )+' — itu jebakannya.',
+  diag:'Kalau jawabanmu '+((a+b)*c)+', kamu menjumlahkan dulu. Perkalian selalu mendahului penjumlahan.'};}
+function g5b(){var a=ri(4,9),b=ri(2,6),c=ri(2,5);return {type:'num',ask:'Hitung: <span class="big">('+a+' + '+b+') × '+c+'</span> = ?',answer:(a+b)*c,
+  hints:['Tanda kurung mengalahkan urutan biasa: isi kurung dikerjakan paling pertama.','Isi kurung: '+a+' + '+b+' = '+(a+b)+'.','Lalu × '+c+': '+(a+b)+' × '+c+' = '+((a+b)*c)+'.'],
+  sol:'Kurung dulu: ('+a+' + '+b+') = '+(a+b)+', lalu × '+c+' = <b>'+((a+b)*c)+'</b>.',
+  diag:'Di sinilah kurung mengubah segalanya — tanpa kurung, kalinya yang duluan.'};}
+function g5c(){var a=ri(6,12),b=ri(2,5),c=ri(2,6);var inner=a-b;var wrong=inner;var stepsTxt=['Langkah 1: '+a+' − '+b+' = '+inner,'Langkah 2: '+inner+' × '+c+' = '+(inner*c),'Langkah 3: jadi ('+a+' − '+b+') × '+c+' = '+(inner*c)];
+  var badIdx=1;var shown=['Langkah 1: '+a+' − '+b+' = '+inner,'Langkah 2: '+inner+' × '+c+' = '+(inner*c+ c),'Langkah 3: jadi hasilnya '+(inner*c+c)];
+  return {type:'pg',ask:'Pengerjaan contoh ini <b>salah di satu langkah</b>. Di langkah mana letak salahnya?<br><span class="big">('+a+' − '+b+') × '+c+'</span><br>'+shown.join('<br>'),options:['Langkah 1','Langkah 2','Langkah 3 — tidak ada yang salah'],correct:1,
+  hints:['Periksa tiap langkah satu per satu dengan hitunganmu sendiri.','Langkah 1 benar: '+a+' − '+b+' = '+inner+'. Cek langkah 2: berapa '+inner+' × '+c+' sebenarnya?','Langkah 2 salah: '+inner+' × '+c+' = '+(inner*c)+', bukan '+(inner*c+c)+'. Langkah 3 hanya mewarisi kesalahan itu.'],
+  sol:'Langkah 1 ✓ ('+inner+'). <b>Langkah 2 ✗</b>: '+inner+' × '+c+' = '+(inner*c)+', bukan '+(inner*c+c)+'. Hasil benar: <b>'+(inner*c)+'</b>.',
+  diag:'Kesalahan hampir selalu bersembunyi di langkah hitungnya, bukan di langkah penyalinan hasil.'};}
+function g5d(){var a=ri(10,30),b=ri(2,9),c=ri(2,9);var divOk=(a%b===0);if(!divOk){a=a-(a%b);}return {type:'num',ask:'Hitung: <span class="big">'+a+' ÷ '+b+' + '+c+'</span> = ?',answer:a/b+c,
+  hints:['Pembagian dikerjakan sebelum penjumlahan, sama seperti perkalian.','Kerjakan dulu '+a+' ÷ '+b+' = '+(a/b)+'.','Lalu + '+c+': '+(a/b)+' + '+c+' = '+(a/b+c)+'.'],
+  sol:'Bagi dulu: '+a+' ÷ '+b+' = '+(a/b)+', lalu + '+c+' = <b>'+(a/b+c)+'</b>.',
+  diag:'Sama seperti perkalian, pembagian juga mendahului tambah/kurang.'};}
+
+/* ---------- Lesson 6: Faktor, kelipatan, FPB, KPK ---------- */
+function g6a(){var n=pick([12,18,20,24,30,36]);var f=factors(n);return {type:'num',ask:'Berapa <b>banyak</b> faktor yang dimiliki bilangan <span class="big">'+n+'</span>? (Faktor = bilangan yang membagi habis '+n+'. 1 dan '+n+' sendiri ikut dihitung.)',answer:f.length,
+  hints:['Pasangkan faktor dari dua ujung: 1 × '+n+', 2 × …, dan seterusnya.','Faktor-faktornya: '+f.join(', ')+'.','Banyaknya = '+f.length+'.'],
+  sol:'Faktor '+n+': '+f.join(', ')+' → ada <b>'+f.length+'</b>.',
+  diag:'Cek pasangan di tengah — bilangan kuadrat punya faktor tengah yang berpasangan dengan dirinya sendiri, jangan dihitung dua kali.'};}
+function g6b(){var a=pick([12,18,24]),b=pick([16,20,30,36]);if(a===b)b+=4;var g=gcd(a,b);return {type:'num',ask:'Berapa <b>FPB</b> (faktor persekutuan terbesar) dari <span class="big">'+a+'</span> dan <span class="big">'+b+'</span>?',answer:g,
+  hints:['Tulis faktor kedua bilangan, lingkari yang sama, ambil terbesar.','Faktor '+a+': '+factors(a).join(', ')+'. Faktor '+b+': '+factors(b).join(', ')+'.','Yang sama dan terbesar = '+g+'.'],
+  sol:'Faktor persekutuan '+a+' & '+b+': '+factors(a).filter(function(x){return b%x===0;}).join(', ')+' → terbesar <b>'+g+'</b>.',
+  diag:'FPB itu faktor yang sama-sama dimiliki KEDUA bilangan — bukan gabungan faktor keduanya.'};}
+function g6c(){var a=pick([4,6,8]),b=pick([5,9,10,12]);if(a===b)b+=1;var l=lcm(a,b);return {type:'num',ask:'Berapa <b>KPK</b> (kelipatan persekutuan terkecil) dari <span class="big">'+a+'</span> dan <span class="big">'+b+'</span>?',answer:l,
+  hints:['Tulis kelipatan kedua bilangan sampai ketemu angka yang sama pertama kali.','Kelipatan '+a+': '+Array.from({length:8},function(_,i){return a*(i+1);}).join(', ')+' … Kelipatan '+b+': '+Array.from({length:8},function(_,i){return b*(i+1);}).join(', ')+' …','Yang sama pertama kali = '+l+'.'],
+  sol:'Kelipatan persekutuan pertama yang sama: <b>'+l+'</b>.',
+  diag:'KPK dicari dari kelipatan (hasil kali), FPB dari faktor (pembagi). Jangan tertukar.'};}
+function g6d(){var base=pick([6,7,8,9,11,12]),k=ri(4,9);return {type:'num',ask:'Kelipatan ke-<span class="big">'+k+'</span> dari <span class="big">'+base+'</span> adalah… (Kelipatan ke-1 = '+base+' itu sendiri.)',answer:base*k,
+  hints:['Kelipatan ke-k = bilangan × k.','Hitung '+base+' × '+k+'.','Hasilnya '+base+' × '+k+' = '+(base*k)+'.'],
+  sol:base+' × '+k+' = <b>'+(base*k)+'</b>.',
+  diag:'Kelipatan ke-k artinya bilangan itu dikali k — bukan ditambah k kali secara manual satu-satu (boleh, tapi lama).'};}
+function g6e(){var a=pick([8,9,10,12,15]),wrong=a*2+pick([1,2]);var opts=shuffle([{t:a*3+' — kelipatan '+a,ok:1},{t:wrong+' — kelipatan '+a,ok:0},{t:(a-1)+' — faktor dari '+a*a,ok:0}]);
+  return {type:'pg',ask:'Manakah pernyataan yang <b>benar</b>?',options:opts.map(function(o){return o.t;}),correct:opts.findIndex(function(o){return o.ok;}),
+  hints:['Kelipatan = hasil mengalikan bilangan dengan 1, 2, 3, … Faktor = pembagi habis.','Cek satu per satu: apakah angkanya habis dibagi '+a+'?','Yang habis dibagi '+a+' hanyalah '+(a*3)+'.'],
+  sol:(a*3)+' = '+a+' × 3, jadi benar kelipatan '+a+'. <b>'+(a*3)+'</b> adalah jawabannya.',
+  diag:'Uji dengan pembagian: kelipatan harus habis dibagi bilangannya.'};}
+
+/* ---------- Lesson 7: Prima & faktorisasi ---------- */
+function g7a(){var n=pick([21,25,27,29,31,33,37,39,41,43,49,51]);var p=isPrime(n);var opts=p?['Prima — hanya bisa dibagi 1 dan dirinya sendiri','Bukan prima — bisa dibagi 3','Bukan prima — bilangan genap']:['Prima — hanya bisa dibagi 1 dan dirinya sendiri','Bukan prima — ada pembagi lain selain 1 dan dirinya','Bukan prima — semua bilangan ganjil itu bukan prima'];
+  return {type:'pg',ask:'Apakah <span class="big">'+n+'</span> bilangan prima?',options:opts,correct:p?0:1,
+  hints:['Prima = tepat dua faktor: 1 dan dirinya sendiri. Uji pembagi kecil: 2, 3, 5, 7.','Coba bagi '+n+' dengan 3, 5, 7: '+(p?'tidak ada yang habis.':'ada yang habis!'),p?n+' tidak habis dibagi bilangan prima mana pun di bawahnya → prima.':n+' habis dibagi '+factors(n)[1]+' → bukan prima.'],
+  sol:p?n+' hanya punya faktor 1 dan '+n+' → <b>prima</b>.':n+' = '+factors(n)[1]+' × '+(n/factors(n)[1])+' → punya faktor selain 1 dan '+n+', jadi <b>bukan prima</b>.',
+  diag:'Ganjil ≠ prima. 27, 33, 39, 49 semuanya ganjil tapi bukan prima — selalu uji bagi 3, 5, 7.'};}
+function g7b(){var n=pick([36,48,60,72]);var pf=primeFactor(n);var keys=Object.keys(pf);var steps=keys.map(function(k){return {label:'Pangkat dari '+k+' dalam faktorisasi '+n+' ('+n+' = '+keys.map(function(x){return x+'^'+pf[x];}).join(' × ')+' — isi pangkat untuk '+k+')',answer:pf[k]};});
+  return {type:'steps',ask:'Faktorisasi prima dari <span class="big">'+n+'</span> berbentuk '+keys.map(function(k){return k+'^□';}).join(' × ')+'. Isi pangkatnya:',steps:steps,
+  hints:['Bagi '+n+' berulang kali dengan bilangan prima terkecil yang bisa: 2 dulu, lalu 3, 5, …','Pohon faktor '+n+': cabang 2 muncul '+ (pf[2]||0) +' kali'+(pf[3]?' dan cabang 3 muncul '+pf[3]+' kali.':'.'),'Faktorisasi lengkap: '+keys.map(function(k){return k+'^'+pf[k];}).join(' × ')+' = '+n+'.'],
+  sol:n+' = '+keys.map(function(k){return k+'<sup>'+pf[k]+'</sup>';}).join(' × ')+'. Kalikan balik untuk cek: hasilnya kembali ke '+n+'. ✓',
+  diag:'Pangkat = berapa kali bilangan prima itu muncul sebagai faktor. Bagi terus sampai sisa 1.'};}
+function g7c(){var start=pick([10,14,20,24,30]);var count=0;for(var i=start+1;i<start+12;i++)if(isPrime(i))count++;var list=[];for(var j=start+1;j<start+12;j++)if(isPrime(j))list.push(j);
+  return {type:'num',ask:'Ada berapa bilangan prima yang <b>lebih besar dari '+start+'</b> dan <b>lebih kecil dari '+(start+12)+'</b>?',answer:count,
+  hints:['Saring satu per satu: buang yang genap (selain 2), buang kelipatan 3, 5, 7.','Yang lolos saringan: '+list.join(', ')+'.','Banyaknya = '+count+'.'],
+  sol:'Prima antara '+start+' dan '+(start+12)+': '+list.join(', ')+' → ada <b>'+count+'</b>.',
+  diag:'Jangan lupa mengecualikan ujung-ujungnya: “antara” berarti '+start+' dan '+(start+12)+' sendiri tidak ikut.'};}
+function g7d(){var opts=shuffle([{t:'1 bukan prima — faktornya hanya satu (1 itu sendiri), prima butuh tepat dua faktor',ok:1},{t:'1 itu prima — karena tidak bisa dibagi bilangan lain',ok:0},{t:'1 itu prima — karena ganjil',ok:0}]);
+  return {type:'pg',ask:'Manakah pernyataan yang benar tentang angka <span class="big">1</span>?',options:opts.map(function(o){return o.t;}),correct:opts.findIndex(function(o){return o.ok;}),
+  hints:['Definisi prima: TEPAT dua faktor berbeda — 1 dan dirinya sendiri.','Untuk angka 1, “1 dan dirinya sendiri” adalah angka yang sama.','Jadi faktor 1 hanya satu buah → tidak memenuhi syarat prima.'],
+  sol:'Prima butuh tepat 2 faktor. Angka 1 hanya punya 1 faktor, jadi <b>1 bukan prima</b> (dan bukan komposit juga — ia kategori sendiri).',
+  diag:'Ini pengecualian klasik yang memang harus diingat dari definisinya, bukan dari rasa “ganjil = prima”.'};}
+
+/* ================= lessons data ================= */
+var LESSONS=[
+ {code:'B1.1',title:'Nilai Tempat & Garis Bilangan',tags:'VIS · NUM',gens:[g1a,g1b,g1c,g1d,g1e],count:5,
+  theory:'<p>Angka yang sama bisa bernilai sangat berbeda tergantung <b>posisinya</b>. Pada bilangan 3.507, angka 3 bernilai 3.000, angka 5 bernilai 500, angka 0 bernilai 0, dan angka 7 bernilai 7. Inilah <b>nilai tempat</b>: dari kanan ke kiri — satuan, puluhan, ratusan, ribuan — tiap langkah ke kiri nilainya dikali 10.</p>'
+  +'<div class="explorer"><div class="ex-title">Utak-atik: geser penanda di garis bilangan</div><div class="nl" id="exNl"><div class="track"></div></div><input type="range" id="exSlider" min="0" max="1000" step="10" value="350" aria-label="Geser angka 0 sampai 1000"><div class="breakdown" id="exBreak">350 = 300 + 50</div></div>'
+  +'<p><b>Garis bilangan</b> adalah peta untuk angka: makin ke kanan makin besar. Membandingkan dua bilangan cukup dengan melihat siapa yang lebih kanan — atau, tanpa gambar, bandingkan digit dari nilai tempat terbesar dulu.</p>'
+  +'<div class="example"><div class="ex-title">Contoh dikerjakan</div><p>Bilangan <b>4.082</b>: angka 4 → ribuan → bernilai 4.000. Angka 0 → ratusan → bernilai 0 (tempatnya tetap ada, isinya kosong). Angka 8 → puluhan → 80. Angka 2 → satuan → 2.</p><p>Bentuk panjangnya: 4.082 = 4.000 + 0 + 80 + 2.</p></div>'
+  +'<div class="keyidea"><b>Ide kunci:</b> nilai sebuah digit = digit × nilai tempatnya. Posisi mengalahkan besar digit: 9 di tempat satuan (9) kalah jauh dari 1 di tempat ribuan (1.000).</div>'},
+ {code:'B1.2',title:'Penjumlahan & Pengurangan',tags:'NUM · STEP',gens:[g2a,g2b,g2c,g2d],count:5,
+  theory:'<p>Penjumlahan dan pengurangan selalu dikerjakan <b>per nilai tempat, dari kanan ke kiri</b>. Alasannya: simpanan dan pinjaman terjadi di perbatasan antar tempat.</p>'
+  +'<div class="example"><div class="ex-title">Contoh: 467 + 285</div><p>Satuan: 7 + 5 = 12 → tulis 2, <b>simpan 1</b> ke puluhan. Puluhan: 6 + 8 + simpanan 1 = 15 → tulis 5, simpan 1. Ratusan: 4 + 2 + 1 = 7. Hasil: <b>752</b>.</p></div>'
+  +'<div class="example"><div class="ex-title">Contoh: 503 − 278</div><p>Satuan: 3 − 8 tidak bisa → pinjam dari puluhan… tapi puluhannya 0. Pinjam dari ratusan: 5 menjadi 4, puluhan menjadi 10; lalu puluhan meminjamkan ke satuan: puluhan 9, satuan 13. Satuan: 13 − 8 = 5. Puluhan: 9 − 7 = 2. Ratusan: 4 − 2 = 2. Hasil: <b>225</b>.</p></div>'
+  +'<div class="keyidea"><b>Ide kunci:</b> simpan/pinjam bukan trik — itu memindahkan 1 bundel berisi 10 dari satu nilai tempat ke tetangganya. Selalu bisa dicek balik: hasil pengurangan + pengurang = bilangan awal.</div>'},
+ {code:'B1.3',title:'Perkalian: Penjumlahan Berulang & Luas',tags:'VIS · NUM',gens:[g3a,g3b,g3c,g3d],count:5,
+  theory:'<p>Perkalian lahir dari kebosanan menjumlah angka yang sama berulang kali. 4 × 6 artinya 6 + 6 + 6 + 6. Gambar yang paling jujur untuk perkalian adalah <b>persegi panjang</b>: 4 baris × 6 kolom berisi 24 kotak — dan itulah juga rumus luas.</p>'
+  +'<div class="explorer"><div class="ex-title">Utak-atik: baris × kolom = luas</div><label for="exA">Baris: <span id="exAval">4</span></label><input type="range" id="exA" min="1" max="8" value="4"><label for="exB">Kolom: <span id="exBval">6</span></label><input type="range" id="exB" min="1" max="9" value="6"><div class="gridvis" id="exGrid"></div><div class="breakdown" id="exProd">4 × 6 = 24</div></div>'
+  +'<p>Perhatikan: memutar persegi panjangnya (6 baris × 4 kolom) tidak mengubah jumlah kotak. Itulah sifat <b>komutatif</b>: a × b = b × a. Untuk angka besar, pecah salah satunya: 13 × 4 = (10 × 4) + (3 × 4) = 40 + 12 = 52.</p>'
+  +'<div class="keyidea"><b>Ide kunci:</b> kalau hafalan kali macet, kembali ke gambar: baris × kolom. Perkalian selalu bisa dipecah mengikuti nilai tempat.</div>'},
+ {code:'B1.4',title:'Pembagian & Hubungannya dengan Perkalian',tags:'NUM · STEP',gens:[g4a,g4b,g4c,g4d],count:5,
+  theory:'<p>Pembagian punya dua wajah yang sama: <b>berbagi rata</b> (12 permen ke 3 anak → tiap anak 4) dan <b>mengelompokkan</b> (12 permen, tiap kelompok 3 → terbentuk 4 kelompok).</p>'
+  +'<p>Jembatan terpenting di modul ini: pembagian adalah <b>kebalikan perkalian</b>. Karena 3 × 4 = 12, maka otomatis 12 ÷ 3 = 4 dan 12 ÷ 4 = 3. Satu fakta perkalian memberimu dua fakta pembagian, gratis.</p>'
+  +'<div class="example"><div class="ex-title">Contoh: 56 ÷ 7</div><p>Jangan menebak. Tanya: 7 × ? = 56. Dari tabel kali 7: 7 × 8 = 56. Jadi 56 ÷ 7 = <b>8</b>.</p></div>'
+  +'<div class="example"><div class="ex-title">Contoh bersisa: 29 ÷ 6</div><p>Kelipatan 6 terbesar yang ≤ 29 adalah 24 (6 × 4). Jadi 29 ÷ 6 = 4 sisa 5. Sisa selalu lebih kecil dari pembagi — kalau sisamu ≥ pembagi, kelompokmu belum maksimal.</p></div>'
+  +'<div class="keyidea"><b>Ide kunci:</b> macet di pembagian? Balik jadi perkalian. Jawaban pembagian selalu bisa diverifikasi: hasil × pembagi (+ sisa) = bilangan awal.</div>'},
+ {code:'B1.5',title:'Operasi Campuran & Urutan Operasi',tags:'NUM · SALAH',gens:[g5a,g5b,g5c,g5d],count:5,
+  theory:'<p>Soal 3 + 4 × 2 akan kacau kalau tiap orang mengerjakan dengan urutan sendiri-sendiri: yang menjumlah dulu dapat 14, yang mengali dulu dapat 11. Matematika menyelesaikan ini dengan <b>kesepakatan urutan</b>:</p>'
+  +'<div class="formula">1. Tanda kurung &nbsp;→&nbsp; 2. Kali &amp; bagi (kiri ke kanan) &nbsp;→&nbsp; 3. Tambah &amp; kurang (kiri ke kanan)</div>'
+  +'<p>Mengapa kali/bagi duluan? Karena perkalian sebenarnya penjumlahan yang “dikemas”: 3 + 4 × 2 berarti 3 + (2 + 2 + 2 + 2) — kemasannya harus dibuka sebagai satu kesatuan, tidak boleh dicampur ke angka di sebelahnya.</p>'
+  +'<div class="example"><div class="ex-title">Contoh: 10 − 2 × 3 + 8 ÷ 4</div><p>Kali &amp; bagi dulu: 2 × 3 = 6 dan 8 ÷ 4 = 2. Soal menjadi 10 − 6 + 2. Kiri ke kanan: <b>6</b>.</p></div>'
+  +'<div class="keyidea"><b>Ide kunci:</b> kurung adalah perintah “aku duluan, mengalahkan segalanya”. Tanpa kurung, kali/bagi selalu menyalip tambah/kurang.</div>'},
+ {code:'B1.6',title:'Faktor, Kelipatan, FPB & KPK',tags:'NUM · MATCH',gens:[g6a,g6b,g6c,g6d,g6e],count:5,
+  theory:'<p><b>Faktor</b> menatap ke dalam: bilangan apa saja yang membagi habis sebuah bilangan. Faktor 12: 1, 2, 3, 4, 6, 12 — selalu berpasangan (1×12, 2×6, 3×4). <b>Kelipatan</b> menatap ke luar: hasil mengalikan bilangan dengan 1, 2, 3, … Kelipatan 12: 12, 24, 36, 48, … tanpa akhir.</p>'
+  +'<div class="example"><div class="ex-title">FPB — untuk membagi rata tanpa sisa</div><p>24 permen dan 18 cokelat mau dibungkus ke paket-paket identik, tanpa sisa. Faktor persekutuan 24 &amp; 18: 1, 2, 3, 6. Terbesar = <b>6 paket</b> (tiap paket 4 permen + 3 coklat).</p></div>'
+  +'<div class="example"><div class="ex-title">KPK — untuk bertemu kembali</div><p>Bus A berangkat tiap 4 jam, bus B tiap 6 jam. Kelipatan persekutuan 4 &amp; 6: 12, 24, … Terkecil = <b>12</b> — mereka berangkat bersama lagi setelah 12 jam.</p></div>'
+  +'<div class="keyidea"><b>Ide kunci:</b> membagi/mengelompokkan → pikir FPB. Menunggu kesamaan waktu/pola berulang → pikir KPK.</div>'},
+ {code:'B1.7',title:'Bilangan Prima & Faktorisasi Pohon',tags:'VIS · NUM',gens:[g7a,g7b,g7c,g7d],count:5,
+  theory:'<p>Bilangan prima adalah “atom” dari bilangan bulat: bilangan yang faktornya <b>tepat dua</b> — 1 dan dirinya sendiri. 2, 3, 5, 7, 11, 13, … Bilangan lain (komposit) selalu bisa dibongkar menjadi perkalian bilangan-bilangan prima, dan bongkarannya <b>unik</b> — hanya ada satu cara.</p>'
+  +'<div class="example"><div class="ex-title">Pohon faktor 36</div><p>36 → 4 × 9 → (2 × 2) × (3 × 3). Semua daunnya prima, berhenti di sana. Faktorisasi: 36 = 2² × 3². Cek balik: 4 × 9 = 36 ✓.</p></div>'
+  +'<p>Pengecualian yang wajib diingat: <b>1 bukan prima</b> (faktornya hanya satu) dan <b>2 adalah satu-satunya prima genap</b>. Ganjil juga bukan jaminan prima: 27, 33, 39, 49 semuanya komposit.</p>'
+  +'<div class="keyidea"><b>Ide kunci:</b> cara menguji prima: coba bagi dengan prima kecil (2, 3, 5, 7, …) sampai akar bilangannya. Tidak ada yang habis → prima.</div>'}
+];
+
+var MODULES=[
+ {lvl:'Basic — setara SD',items:[['B1','Bilangan & Operasi Dasar',true],['B2','Pecahan, Desimal & Persen'],['B3','Pengukuran, Waktu & Uang'],['B4','Geometri Dasar'],['B5','Bangun Ruang & Volume'],['B6','Data & Diagram']]},
+ {lvl:'Intermediate — setara SMP',items:[['I1','Bilangan Lanjut'],['I2','Aljabar Dasar'],['I3','Persamaan & Pertidaksamaan Linear'],['I4','Rasio, Proporsi & Aritmetika Sosial'],['I5','Fungsi & Grafik'],['I6','Geometri Intermediate'],['I7','Statistika & Peluang Dasar'],['I8','Pola & Barisan']]},
+ {lvl:'Advanced — setara SMA',items:[['A1','Fungsi & Persamaan Kuadrat'],['A2','Eksponen & Logaritma'],['A3','Trigonometri'],['A4','Barisan, Deret, Matriks & Vektor'],['A5','Limit, Turunan & Integral'],['A6','Statistika & Peluang Lanjut'],['A7','Geometri Analitik & Transformasi']]}
+];
+
+/* ================= state ================= */
+var state={cur:0,questions:[],answers:{},checked:{},hintLvl:{},finished:false,isUji:false,
+  progress:{}}; /* progress[lessonIdx] = {score, mastered} ; progress.uji = {...} */
+
+/* ================= map render ================= */
+function renderMap(){
+  var root=document.getElementById('mapRoot');var html='';
+  MODULES.forEach(function(g){
+    html+='<div class="lvl">'+g.lvl+'</div>';
+    g.items.forEach(function(m){
+      var active=m[2];
+      html+='<div class="mod"><div class="mod-head"><span class="code">'+m[0]+'</span><span>'+m[1]+'</span>'
+        +(active?(state.progress.uji&&state.progress.uji.mastered?'<span class="mastered">Modul dikuasai ✓</span>':''):'<span class="soon">Segera hadir</span>')+'</div>';
+      if(active){
+        html+='<ul class="lesson-list">';
+        LESSONS.forEach(function(L,i){
+          var p=state.progress[i];
+          html+='<li><button type="button" class="lbtn'+(state.cur===i&&!state.isUji?' active':'')+'" data-lesson="'+i+'"><span class="num">'+(i+1)+'</span><span>'+L.title+'<span class="tags">'+L.tags+'</span></span>'+(p&&p.mastered?'<span class="st">Dikuasai ✓</span>':(p?'<span class="st" style="color:var(--ink-soft)">'+p.score+'%</span>':''))+'</button></li>';
+        });
+        var u=state.progress.uji;
+        html+='<li><button type="button" class="lbtn'+(state.isUji?' active':'')+'" data-uji="1"><span class="num">UJI</span><span>Uji Modul B1 — 10 soal acak, tanpa petunjuk<span class="tags">UJI</span></span>'+(u&&u.mastered?'<span class="st">Lulus ✓</span>':(u?'<span class="st" style="color:var(--ink-soft)">'+u.score+'%</span>':''))+'</button></li>';
+        html+='</ul>';
+      }
+      html+='</div>';
+    });
+  });
+  root.innerHTML=html;
+  root.querySelectorAll('[data-lesson]').forEach(function(b){b.addEventListener('click',function(){loadLesson(+b.getAttribute('data-lesson'));});});
+  root.querySelectorAll('[data-uji]').forEach(function(b){b.addEventListener('click',loadUji);});
+}
+
+/* ================= explorers ================= */
+function wireExplorers(idx){
+  if(idx===0){
+    var slider=document.getElementById('exSlider'),brk=document.getElementById('exBreak'),nl=document.getElementById('exNl');
+    if(!slider)return;
+    var ticks='';for(var t=0;t<=1000;t+=100){ticks+='<span class="tick" style="left:'+(t/10)+'%"></span><span class="ticklab" style="left:'+(t/10)+'%">'+t+'</span>';}
+    nl.insertAdjacentHTML('beforeend',ticks+'<span class="marker" id="exMarker"></span>');
+    var marker=document.getElementById('exMarker');
+    function upd(){var v=+slider.value;marker.style.left=(v/10)+'%';
+      var r=Math.floor(v/1000)*1000,h=Math.floor(v%1000/100)*100,p=Math.floor(v%100/10)*10,s=v%10;var parts=[];
+      if(r)parts.push(fmt(r));if(h)parts.push(fmt(h));if(p)parts.push(p);if(s)parts.push(s);if(!parts.length)parts.push('0');
+      brk.textContent=fmt(v)+' = '+parts.join(' + ');}
+    slider.addEventListener('input',upd);upd();
+  }
+  if(idx===2){
+    var A=document.getElementById('exA'),B=document.getElementById('exB'),G=document.getElementById('exGrid'),P=document.getElementById('exProd');
+    if(!A)return;
+    function upd2(){var a=+A.value,b=+B.value;document.getElementById('exAval').textContent=a;document.getElementById('exBval').textContent=b;
+      G.style.gridTemplateColumns='repeat('+b+',1fr)';var cells='';for(var i=0;i<a*b;i++)cells+='<i></i>';G.innerHTML=cells;
+      P.textContent=a+' × '+b+' = '+(a*b)+'  ('+Array(a).fill(b).join(' + ')+' = '+(a*b)+')';}
+    A.addEventListener('input',upd2);B.addEventListener('input',upd2);upd2();
+  }
+}
+
+/* ================= practice render ================= */
+function genSet(gens,count){var out=[],pool=gens.slice();var i=0;while(out.length<count){out.push(pool[i%pool.length]());i++;if(i>50)break;}return shuffle(out);}
+function loadLesson(idx){
+  state.cur=idx;state.isUji=false;state.finished=false;state.answers={};state.checked={};state.hintLvl={};
+  var L=LESSONS[idx];
+  state.questions=genSet(L.gens,L.count);
+  document.getElementById('lessonCode').textContent=L.code;
+  document.getElementById('lessonTitle').textContent=L.title;
+  document.getElementById('practiceTitle').textContent='Latihan — cek instan';
+  var pr=document.getElementById('prereqBox');
+  if(idx>0){pr.style.display='block';pr.innerHTML='Saran jalur (bukan syarat): lesson ini lebih enak setelah <b>'+LESSONS[idx-1].code+' — '+LESSONS[idx-1].title+'</b>. Tapi silakan langsung mulai kalau mau.';}
+  else{pr.style.display='block';pr.innerHTML='Titik awal jalur saran Matematika. Tetap boleh loncat ke lesson mana pun di peta.';}
+  document.getElementById('theoryRoot').innerHTML=L.theory;
+  document.getElementById('resultBox').className='result';
+  document.getElementById('finishBtn').textContent='Selesaikan Lesson';
+  wireExplorers(idx);renderPractice();renderMap();updateOverall();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function loadUji(){
+  state.isUji=true;state.finished=false;state.answers={};state.checked={};state.hintLvl={};
+  var all=[];LESSONS.forEach(function(L){L.gens.forEach(function(g){all.push(g);});});
+  state.questions=genSet(all,10);
+  document.getElementById('lessonCode').textContent='UJI B1';
+  document.getElementById('lessonTitle').textContent='Uji Modul B1';
+  document.getElementById('practiceTitle').textContent='Uji modul — 10 soal acak, tanpa petunjuk';
+  var pr=document.getElementById('prereqBox');pr.style.display='block';
+  pr.innerHTML='Uji ini mengambil soal acak dari ketujuh lesson B1 dengan angka baru. Tombol petunjuk dimatikan — seperti ujian beneran. Lulus = skor ≥ 80%.';
+  document.getElementById('theoryRoot').innerHTML='<p>Uji modul bukan gerbang — semua lesson tetap terbuka apa pun hasilnya. Anggap ini cermin: bagian mana yang sudah kokoh, bagian mana yang masih goyang.</p><div class="example"><div class="ex-title">Strategi</div><p>1. Kerjakan yang paling yakin dulu.<br>2. Setiap jawaban pembagian/perkalian bisa dicek balik dengan operasi lawannya.<br>3. Untuk operasi campuran, tandai (dalam hati) mana yang dikerjakan duluan: kurung → kali/bagi → tambah/kurang.</p></div><div class="keyidea"><b>Ingat:</b> skor di bawah 80% bukan vonis — peta di kiri menunjukkan lesson mana yang layak diulang, dan setiap pengulangan memberi angka soal yang baru.</div>';
+  document.getElementById('resultBox').className='result';
+  document.getElementById('finishBtn').textContent='Kumpulkan Uji';
+  renderPractice();renderMap();updateOverall();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function qHTML(q,i){
+  var h='<div class="q" id="q'+i+'"><div class="qhead"><span class="qno">Soal '+(i+1)+'</span><span class="qtype">'
+    +(q.type==='num'?'Isian numerik':q.type==='pg'?'Pilihan konsep':q.type==='steps'?'Multi-langkah':'Garis bilangan')
+    +'</span><span class="qstate" id="qs'+i+'"></span></div><p class="qask">'+q.ask+'</p>';
+  if(q.grid){h+='<div class="gridvis" style="grid-template-columns:repeat('+q.grid.b+',1fr);max-width:220px">'+Array(q.grid.a*q.grid.b).fill('<i></i>').join('')+'</div>';}
+  if(q.type==='pg'){h+='<div class="opts" role="radiogroup">';q.options.forEach(function(o,j){h+='<button type="button" class="opt" data-q="'+i+'" data-opt="'+j+'"><span class="key">'+'ABCD'[j]+'</span><span>'+o+'</span></button>';});h+='</div>';}
+  if(q.type==='num'){h+='<div class="ansrow"><input type="number" inputmode="numeric" id="in'+i+'" aria-label="Jawaban soal '+(i+1)+'"><span style="font-size:.85rem;color:var(--ink-soft)">tekan Cek Jawaban</span></div>';}
+  if(q.type==='line'){h+='<div class="qline"><input type="range" id="in'+i+'" min="'+q.min+'" max="'+q.max+'" step="1" value="'+q.min+'" aria-label="Geser penanda garis bilangan"><div>Posisi penanda: <span class="cur" id="cur'+i+'">'+q.min+'</span> <span style="color:var(--ink-soft);font-size:.85rem">(skala '+q.min+'–'+q.max+')</span></div></div>';}
+  if(q.type==='steps'){q.steps.forEach(function(s,j){h+='<div class="stepitem"><span class="slab">'+s.label+'</span><input type="number" inputmode="numeric" id="in'+i+'_'+j+'" aria-label="'+s.label.replace(/"/g,'')+'"></div>';});}
+  h+='<div class="qactions"><button type="button" class="btn" data-check="'+i+'">Cek Jawaban</button>'
+    +(state.isUji?'':'<button type="button" class="btn ghost" data-hint="'+i+'">Petunjuk</button>')
+    +'</div><div class="hintbox" id="hint'+i+'"></div><div class="feedback" id="fb'+i+'"></div></div>';
+  return h;
+}
+function renderPractice(){
+  var root=document.getElementById('practiceRoot');
+  root.innerHTML=state.questions.map(qHTML).join('');
+  root.querySelectorAll('.opt').forEach(function(b){b.addEventListener('click',function(){
+    var qi=+b.getAttribute('data-q');state.answers[qi]=+b.getAttribute('data-opt');
+    root.querySelectorAll('.opt[data-q="'+qi+'"]').forEach(function(x){x.classList.remove('sel');});b.classList.add('sel');});});
+  root.querySelectorAll('[data-check]').forEach(function(b){b.addEventListener('click',function(){checkQ(+b.getAttribute('data-check'));});});
+  root.querySelectorAll('[data-hint]').forEach(function(b){b.addEventListener('click',function(){showHint(+b.getAttribute('data-hint'));});});
+  state.questions.forEach(function(q,i){if(q.type==='line'){var inp=document.getElementById('in'+i);inp.addEventListener('input',function(){document.getElementById('cur'+i).textContent=inp.value;});}});
+}
+function readAnswer(q,i){
+  if(q.type==='pg')return state.answers[i];
+  if(q.type==='num'||q.type==='line'){var v=document.getElementById('in'+i).value;return v===''?null:+v;}
+  if(q.type==='steps'){var arr=[];for(var j=0;j<q.steps.length;j++){var v=document.getElementById('in'+i+'_'+j).value;arr.push(v===''?null:+v);}return arr;}
+  return null;
+}
+function isCorrect(q,ans){
+  if(ans===null||ans===undefined)return false;
+  if(q.type==='pg')return ans===q.correct;
+  if(q.type==='num'||q.type==='line')return ans===q.answer;
+  if(q.type==='steps')return q.steps.every(function(s,j){return ans[j]===s.answer;});
+  return false;
+}
+function checkQ(i){
+  var q=state.questions[i];var ans=readAnswer(q,i);var fb=document.getElementById('fb'+i);var st=document.getElementById('qs'+i);var card=document.getElementById('q'+i);
+  if(ans===null||(Array.isArray(ans)&&ans.indexOf(null)>=0)){fb.className='feedback show bad';fb.innerHTML='Isi dulu jawabannya, baru cek.';return;}
+  var ok=isCorrect(q,ans);state.checked[i]=ok;
+  card.classList.remove('done-ok','done-bad');card.classList.add(ok?'done-ok':'done-bad');
+  st.textContent=ok?'Benar ✓':'Belum tepat';st.className='qstate '+(ok?'ok':'bad');
+  if(q.type==='steps'&&!ok){var badSteps=[];q.steps.forEach(function(s,j){if(ans[j]!==s.answer)badSteps.push('Langkah '+(j+1));});
+    fb.className='feedback show bad';fb.innerHTML='<b>Diagnosis:</b> yang meleset di <b>'+badSteps.join(' dan ')+'</b>. '+(q.diag||'')+'<div class="sol"><b>Pembahasan:</b> '+q.sol+'</div>';}
+  else if(ok){fb.className='feedback show ok';fb.innerHTML='<b>Benar.</b><div class="sol">'+q.sol+'</div>';}
+  else{fb.className='feedback show bad';fb.innerHTML='<b>Belum tepat.</b> '+(q.diag||'')+'<div class="sol"><b>Pembahasan:</b> '+q.sol+'</div>';}
+}
+function showHint(i){
+  var q=state.questions[i];var lvl=(state.hintLvl[i]||0)+1;if(lvl>3)lvl=3;state.hintLvl[i]=lvl;
+  var box=document.getElementById('hint'+i);box.className='hintbox show';
+  box.innerHTML='<span class="hlvl">Petunjuk '+lvl+' dari 3</span><br>'+q.hints[lvl-1]+(lvl===3?'<br><span style="font-size:.82rem">Petunjuk lapis 3 terpakai — lesson ini tidak ditandai “Dikuasai” pada percobaan ini, tapi tetap bisa diselesaikan.</span>':'');
+}
+function finish(){
+  var total=state.questions.length;var answered=0,correct=0;
+  state.questions.forEach(function(q,i){var ans=readAnswer(q,i);if(ans!==null&&!(Array.isArray(ans)&&ans.indexOf(null)>=0)){answered++;if(state.checked[i]===undefined)checkQ(i);}});
+  state.questions.forEach(function(q,i){if(state.checked[i])correct++;});
+  var box=document.getElementById('resultBox');
+  if(answered<total){box.className='result show';box.innerHTML='<h3>Belum semua terjawab</h3><p>Baru '+answered+' dari '+total+' soal terisi. Isi sisanya dulu, atau tekan Cek Jawaban per soal untuk melihat pembahasan.</p>';box.scrollIntoView({behavior:'smooth',block:'center'});return;}
+  var score=Math.round(correct/total*100);
+  var usedL3=Object.keys(state.hintLvl).some(function(k){return state.hintLvl[k]>=3;});
+  var mastered=score>=80&&!usedL3;
+  if(state.isUji){state.progress.uji={score:score,mastered:score>=80};}
+  else{var prev=state.progress[state.cur];if(!prev||score>prev.score)state.progress[state.cur]={score:score,mastered:mastered||(prev&&prev.mastered&&score>=80)};else if(mastered)prev.mastered=true;}
+  state.finished=true;
+  box.className='result show';
+  if(state.isUji){
+    box.innerHTML='<h3>Skor uji: '+score+'% ('+correct+'/'+total+' benar)</h3><p>'+(score>=80?'Modul B1 dinyatakan <b>dikuasai</b>. Penanda ini bahan peta progres dan antrean pengulangan berkala nanti — bukan gerbang ke mana pun.':'Belum mencapai 80%. Lihat di peta lesson mana yang skornya paling rendah, ulangi lesson itu (angkanya akan baru), lalu coba uji lagi.')+'</p><button type="button" class="btn" onclick="loadUji()">Ulangi Uji (Soal Baru)</button>';
+  }else{
+    box.innerHTML='<h3>Skor lesson: '+score+'% ('+correct+'/'+total+' benar)</h3><p>'+(mastered?'Lesson ini ditandai <b>Dikuasai</b> di peta.':score>=80&&usedL3?'Skornya lulus, tapi petunjuk lapis 3 terpakai — coba sekali lagi tanpa petunjuk penuh untuk mendapat tanda Dikuasai.':'Belum 80%. Baca lagi pembahasan soal yang salah, lalu ambil set soal baru — angkanya berubah, konsepnya sama.')+'</p><button type="button" class="btn" onclick="loadLesson(state.cur)">Ulangi Lesson (Soal Baru)</button>'+(state.cur<6?' <button type="button" class="btn ghost" onclick="loadLesson(state.cur+1)">Lanjut: '+LESSONS[state.cur+1].code+'</button>':' <button type="button" class="btn ghost" onclick="loadUji()">Ke Uji Modul B1</button>');
+  }
+  box.scrollIntoView({behavior:'smooth',block:'center'});
+  renderMap();updateOverall();
+}
+function updateOverall(){
+  var done=0;for(var i=0;i<7;i++)if(state.progress[i]&&state.progress[i].mastered)done++;
+  if(state.progress.uji&&state.progress.uji.mastered)done++;
+  document.getElementById('overallPct').textContent=done+' dari 8 bagian dikuasai';
+  document.getElementById('overallBar').style.width=(done/8*100)+'%';
+}
+document.getElementById('finishBtn').addEventListener('click',finish);
+document.getElementById('newSetBtn').addEventListener('click',function(){if(state.isUji)loadUji();else loadLesson(state.cur);});
+loadLesson(0);
+</script>
+</body>
+</html>
