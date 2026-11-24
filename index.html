@@ -8,7 +8,7 @@
 <title>Matematika Interaktif — Modul B1</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Caveat:wght@600;700&family=Patrick+Hand&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
   :root{
     --bg:#f4f2ec; --surface:#fffdf8; --surface2:#eceadf; --ink:#1d2420; --ink-soft:#4c554f;
@@ -176,7 +176,7 @@
   .wrap{position:relative}
   .wrap::before{content:"";position:absolute;left:6px;top:0;bottom:0;width:1px;background:rgba(217,45,32,.28);box-shadow:3px 0 0 rgba(217,45,32,.18);pointer-events:none}
   @media(max-width:640px){.wrap::before{left:2px}}
-  h1{font-family:"Patrick Hand","Caveat",cursive;font-weight:400;letter-spacing:.01em;color:var(--ink-blue);font-size:clamp(2rem,4.2vw,2.9rem);line-height:1.05;text-decoration:underline;text-decoration-color:var(--highlight);text-decoration-thickness:8px;text-underline-offset:-2px;text-decoration-skip-ink:none}
+  h1{font-family:"Plus Jakarta Sans",system-ui,sans-serif;font-weight:800;letter-spacing:-.015em;color:var(--ink-blue);font-size:clamp(1.85rem,3.8vw,2.55rem);line-height:1.12;text-decoration:underline;text-decoration-color:var(--highlight);text-decoration-thickness:7px;text-underline-offset:1px;text-decoration-skip-ink:none}
   @media (prefers-color-scheme: dark){h1{color:#dbe6ff}}
   .crumb{font-family:"IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.06em;font-size:.74rem}
   .crumb b{color:var(--teal);background:var(--highlight);padding:1px 6px;border-radius:2px;color:#1b2340}
@@ -191,9 +191,9 @@
     box-shadow:3px 3px 0 rgba(30,64,175,.12), 0 1px 0 #fff inset;
   }
   .map{border-top:4px solid var(--teal)}
-  .panel h3,.map h2{font-family:"Patrick Hand",cursive;font-weight:400;letter-spacing:.04em;text-transform:none;font-size:1.05rem;color:var(--teal)}
-  .lesson-head h2{font-family:"Patrick Hand",cursive;font-weight:400;font-size:1.75rem;color:var(--ink)}
-  .lesson-head .code{background:var(--teal);color:#fff;padding:3px 8px;border-radius:3px;transform:rotate(-1.2deg);display:inline-block}
+  .panel h3,.map h2{font-family:"Plus Jakarta Sans",system-ui,sans-serif;font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:.8rem;color:var(--teal)}
+  .lesson-head h2{font-family:"Plus Jakarta Sans",system-ui,sans-serif;font-weight:800;letter-spacing:-.01em;font-size:1.55rem;color:var(--ink)}
+  .lesson-head .code{background:var(--teal);color:#fff;padding:3px 8px;border-radius:3px;display:inline-block}
   .mod{border-radius:4px;border-style:dashed}
   .mod-head{background:transparent;border-bottom:1px dashed var(--line)}
   .lbtn{border-radius:3px}
@@ -203,14 +203,14 @@
   .formula{
     background:linear-gradient(100deg,rgba(255,236,112,.55),var(--highlight) 18%,var(--highlight) 82%,rgba(255,236,112,.55));
     color:#1b2340;border:0;border-radius:2px 8px 2px 8px;box-shadow:0 1px 0 rgba(0,0,0,.06);
-    transform:rotate(-.35deg);font-weight:600;
+    font-weight:600;
   }
   @media (prefers-color-scheme: dark){.formula{color:#fef9c3}}
   .keyidea{border-left:0;background:linear-gradient(transparent 55%,rgba(255,236,112,.75) 55%);padding:10px 12px;border-radius:2px}
   .keyidea b{color:var(--teal);text-decoration:underline wavy rgba(30,64,175,.45) 1px;text-underline-offset:3px}
   .example,.explorer{background:#eef3ff;border:1px dashed #8aa0d8;border-radius:4px 10px 4px 10px;background-image:repeating-linear-gradient(transparent,transparent 24px,rgba(30,64,175,.08) 24px,rgba(30,64,175,.08) 25px)}
   @media (prefers-color-scheme: dark){.example,.explorer{background:#232f52}}
-  .example .ex-title,.explorer .ex-title{font-family:"Caveat",cursive;text-transform:none;letter-spacing:0;font-size:1.05rem}
+  .example .ex-title,.explorer .ex-title{font-family:"Plus Jakarta Sans",system-ui,sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:.06em;font-size:.8rem}
   .example .ex-title{color:var(--pencil-red)}
   .explorer .ex-title{color:var(--teal)}
   /* Tombol seperti stempel tinta */
@@ -221,8 +221,8 @@
   /* Koreksi pensil merah */
   .q.done-bad{border-color:var(--pencil-red);box-shadow:3px 3px 0 rgba(217,45,32,.18)}
   .q.done-ok{border-color:var(--teal);box-shadow:3px 3px 0 rgba(30,64,175,.16)}
-  .q .qstate.bad{color:var(--pencil-red);font-family:"Caveat",cursive;font-size:1.15rem;transform:rotate(-2deg)}
-  .q .qstate.ok{color:var(--teal);font-family:"Caveat",cursive;font-size:1.15rem}
+  .q .qstate.bad{color:var(--pencil-red);font-family:"Plus Jakarta Sans",system-ui,sans-serif;font-size:.85rem;font-weight:800}
+  .q .qstate.ok{color:var(--teal);font-family:"Plus Jakarta Sans",system-ui,sans-serif;font-size:.85rem;font-weight:800}
   .feedback.bad{background:#fff1f0;border:1.5px dashed var(--pencil-red);color:#7f1d1d}
   @media (prefers-color-scheme: dark){.feedback.bad{color:#fecaca}}
   .feedback.ok{background:var(--teal-soft);border:1.5px solid var(--teal)}
@@ -240,114 +240,6 @@
   .bar>i{background:repeating-linear-gradient(-45deg,var(--teal),var(--teal) 8px,#2b5ce6 8px,#2b5ce6 16px)}
   .gridvis i{background:var(--teal);border-radius:1px}
   footer{border-top:1px dashed var(--line);font-family:"IBM Plex Mono",monospace;font-size:.76rem}
-  @media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
-  /* ===== TEMA PAPAN TULIS — kapur di papan hijau ===== */
-  :root{
-    --bg:#16241c; --surface:#22392c; --surface2:#2b4a38; --ink:#f5f1e3; --ink-soft:#c9d1bf;
-    --line:#5a7a65; --teal:#ffe66d; --teal-soft:#3a4a28; --amber:#ffb3c6; --amber-soft:#4a2f3a;
-    --red:#ff9a8a; --red-soft:#4d2a24; --green:#a7e8b0; --green-soft:#20402c;
-    --radius:6px; --chalk:#f5f1e3; --chalk-yellow:#ffe66d; --chalk-pink:#ffb3c6; --chalk-blue:#9bd1e9; --chalk-mint:#a7e8b0; --wood:#7a5230;
-  }
-  @media (prefers-color-scheme: dark){
-    :root{
-      --bg:#101c15; --surface:#1c2f24; --surface2:#243d2f; --ink:#f5f1e3; --ink-soft:#b9c4ae;
-      --line:#4a6a58; --teal:#ffe66d; --teal-soft:#333f22; --amber:#ffb3c6; --amber-soft:#40262f;
-      --red:#ff9a8a; --red-soft:#40221e; --green:#a7e8b0; --green-soft:#183626;
-    }
-  }
-  body{
-    font-family:"Plus Jakarta Sans",system-ui,sans-serif;
-    color:var(--ink);
-    background-color:var(--bg);
-    background-image:
-      radial-gradient(ellipse 700px 260px at 18% 8%, rgba(255,255,255,.07), transparent 65%),
-      radial-gradient(ellipse 600px 300px at 82% 22%, rgba(255,255,255,.05), transparent 65%),
-      radial-gradient(ellipse 800px 400px at 50% 78%, rgba(255,255,255,.045), transparent 70%),
-      repeating-linear-gradient(0deg, rgba(255,255,255,.012) 0 2px, transparent 2px 4px);
-    background-size:auto,auto,auto,auto;
-  }
-  .wrap::before{display:none!important}
-  /* Judul kapur */
-  h1{
-    font-family:"Caveat",cursive; font-weight:700; color:var(--chalk);
-    font-size:clamp(2.4rem,5vw,3.4rem); line-height:1; letter-spacing:.01em;
-    text-decoration:none; text-shadow:0 0 3px rgba(245,241,227,.45), 0 0 12px rgba(245,241,227,.12);
-    border-bottom:3px solid rgba(255,230,109,.85); display:inline-block; padding-bottom:6px; margin-bottom:10px;
-  }
-  .crumb{font-family:"Caveat",cursive; text-transform:none; letter-spacing:.02em; font-size:1.05rem; color:var(--ink-soft)}
-  .crumb b{color:#1c2f24; background:var(--chalk-yellow); padding:1px 10px; border-radius:2px 10px 2px 10px; box-shadow:1px 1px 0 rgba(0,0,0,.35); transform:rotate(-1deg); display:inline-block}
-  .lede{color:var(--ink-soft)}
-  .overall .pct{color:var(--chalk)}
-  /* Papan tulis: panel seperti bidang papan berbingkai kayu */
-  .map,.panel,.q{
-    background-color:var(--surface);
-    background-image:radial-gradient(ellipse 400px 160px at 30% 0%, rgba(255,255,255,.05), transparent 70%);
-    border:2px solid rgba(245,241,227,.75);
-    border-radius:3px;
-    box-shadow:0 0 0 5px var(--wood), 0 0 0 7px #4a3018, 6px 10px 24px rgba(0,0,0,.45), inset 0 0 40px rgba(0,0,0,.22);
-    color:var(--ink);
-  }
-  .map{border-top:2px solid rgba(245,241,227,.75)}
-  .panel h3,.map h2{font-family:"Caveat",cursive; font-weight:700; letter-spacing:.02em; text-transform:none; font-size:1.45rem; color:var(--chalk-yellow); text-shadow:0 0 2px rgba(255,230,109,.35)}
-  .lesson-head h2{font-family:"Caveat",cursive; font-weight:700; font-size:2rem; color:var(--chalk); text-shadow:0 0 3px rgba(245,241,227,.35)}
-  .lesson-head .code{background:var(--chalk-yellow); color:#1c2f24; padding:3px 10px; border-radius:2px 8px 2px 8px; transform:rotate(-1.5deg); display:inline-block; font-weight:700; box-shadow:2px 2px 0 rgba(0,0,0,.3)}
-  .mod{border:1px dashed rgba(245,241,227,.45); border-radius:3px; background:rgba(255,255,255,.03)}
-  .mod-head{background:rgba(255,255,255,.04); border-bottom:1px dashed rgba(245,241,227,.35); color:var(--ink)}
-  .mod-head .code{color:var(--chalk-yellow)}
-  .mod-head .soon{background:transparent; color:var(--ink-soft); border-color:rgba(245,241,227,.4)}
-  .lbtn{color:var(--ink); border-radius:3px}
-  .lbtn:hover{background:rgba(255,255,255,.07)}
-  .lbtn.active{background:rgba(255,230,109,.16); box-shadow:inset 3px 0 0 var(--chalk-yellow); color:var(--chalk)}
-  .lbtn .num{background:transparent; border:1px solid rgba(245,241,227,.55); color:var(--chalk-yellow); border-radius:3px}
-  .lbtn.active .num{background:rgba(255,230,109,.18); color:var(--chalk)}
-  .lbtn .tags{color:var(--ink-soft)}
-  /* Rumus ditulis kapur kuning, digarisbawahi kapur */
-  .formula{
-    background:transparent; color:var(--chalk-yellow); border:1.5px dashed rgba(255,230,109,.75); border-radius:3px;
-    box-shadow:none; transform:none; font-weight:600; text-shadow:0 0 2px rgba(255,230,109,.3);
-  }
-  .keyidea{border-left:0; background:transparent; border:1.5px dashed rgba(167,232,176,.6); padding:12px 14px; border-radius:3px}
-  .keyidea b{color:var(--chalk-mint); text-decoration:underline wavy rgba(167,232,176,.6) 1px; text-underline-offset:4px}
-  .example,.explorer{background:rgba(0,0,0,.18); border:1.5px dashed rgba(245,241,227,.45); border-radius:3px; background-image:none; color:var(--ink)}
-  .example .ex-title,.explorer .ex-title{font-family:"Caveat",cursive; text-transform:none; letter-spacing:0; font-size:1.3rem}
-  .example .ex-title{color:var(--chalk-pink)}
-  .explorer .ex-title{color:var(--chalk-blue)}
-  .explorer input[type=range]{accent-color:var(--chalk-yellow)}
-  .breakdown{background:rgba(0,0,0,.25); border:1px dashed rgba(245,241,227,.4); color:var(--chalk-yellow)}
-  .nl .track{background:rgba(245,241,227,.7)}
-  .nl .tick{background:var(--ink-soft)}
-  .nl .ticklab{color:var(--ink-soft)}
-  .nl .marker{border-top-color:var(--chalk-yellow)}
-  /* Tombol kapur */
-  .btn{background:var(--chalk-yellow); border-color:var(--chalk-yellow); color:#1c2f24; border-radius:3px 10px 3px 10px; box-shadow:2px 2px 0 rgba(0,0,0,.4); letter-spacing:.01em}
-  .btn.ghost{background:transparent; color:var(--chalk); border-color:rgba(245,241,227,.7); box-shadow:none}
-  .btn.plain{background:transparent; border-color:rgba(245,241,227,.35); color:var(--ink-soft); box-shadow:none}
-  .btn:disabled{opacity:.45}
-  /* Status kapur warna */
-  .q.done-bad{border-color:var(--chalk-pink); box-shadow:0 0 0 5px var(--wood), 0 0 0 7px #4a3018, 6px 10px 24px rgba(0,0,0,.45)}
-  .q.done-ok{border-color:var(--chalk-mint); box-shadow:0 0 0 5px var(--wood), 0 0 0 7px #4a3018, 6px 10px 24px rgba(0,0,0,.45)}
-  .q .qno{background:rgba(255,255,255,.1); color:var(--chalk)}
-  .q .qtype{color:var(--chalk-blue)}
-  .q .qstate.bad{color:var(--chalk-pink); font-family:"Caveat",cursive; font-size:1.3rem; transform:rotate(-2deg)}
-  .q .qstate.ok{color:var(--chalk-mint); font-family:"Caveat",cursive; font-size:1.3rem}
-  .feedback.bad{background:rgba(255,154,138,.14); border:1.5px dashed var(--chalk-pink); color:#ffd9d2}
-  .feedback.ok{background:rgba(167,232,176,.13); border:1.5px solid rgba(167,232,176,.6); color:#d9f5de}
-  .hintbox{background:rgba(255,179,198,.12); border:1px dashed var(--chalk-pink); color:#ffe0e8}
-  .hintbox .hlvl{color:var(--chalk-pink)}
-  .opt{border-radius:3px 8px 3px 8px; background:rgba(255,255,255,.04); border-color:rgba(245,241,227,.5); color:var(--ink)}
-  .opt:hover{border-color:var(--chalk-yellow)}
-  .opt.sel{background:rgba(255,230,109,.18); border-color:var(--chalk-yellow); box-shadow:inset 3px 0 0 var(--chalk-yellow); color:var(--chalk)}
-  .opt .key{background:transparent; border-color:rgba(245,241,227,.5); color:var(--chalk-yellow)}
-  .ansrow input[type=text],.ansrow input[type=number],.stepitem input{border-radius:3px; border:1.5px dashed rgba(245,241,227,.65); background:rgba(0,0,0,.28); background-image:none; color:var(--chalk-yellow); font-weight:600}
-  .ansrow input:focus,.opt:focus-visible,button:focus-visible{outline:2px solid var(--chalk-yellow); outline-offset:2px}
-  .soft-prereq{background:rgba(255,179,198,.12); border:1px dashed var(--chalk-pink); border-radius:3px 10px 3px 10px; color:#ffe0e8}
-  .result{border-radius:3px; border:1.5px dashed var(--chalk-yellow); background:rgba(255,230,109,.12); color:var(--ink)}
-  .result h3{color:var(--chalk)}
-  .bar{border-radius:2px; background:rgba(0,0,0,.35); border-color:rgba(245,241,227,.5)}
-  .bar>i{background:repeating-linear-gradient(-45deg,var(--chalk-yellow),var(--chalk-yellow) 8px,#e6c93d 8px,#e6c93d 16px)}
-  .gridvis i{background:var(--chalk-yellow); border-radius:1px; opacity:.9}
-  .qline input[type=range]{accent-color:var(--chalk-pink)}
-  footer{border-top:1px dashed rgba(245,241,227,.35); color:var(--ink-soft); font-family:"IBM Plex Mono",monospace; font-size:.76rem}
   @media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
