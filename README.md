@@ -8,10 +8,12 @@ Buka `index.html` di browser, atau aktifkan GitHub Pages dari branch `main` untu
 
 ## Status
 
-- **Matematika Modul B1 — Bilangan & Operasi Dasar: SELESAI (MVP)**
+- **Matematika Modul B1 — Bilangan & Operasi Dasar: SELESAI**
   7 lesson + Uji Modul 10 soal. Soal parametrik (angka diacak tiap set), cek instan dengan
   diagnosis kesalahan, petunjuk bertingkat 3 lapis, status "Dikuasai" pada skor ≥ 80%.
-- Modul lain (B2–B6, Intermediate, Advanced) dan mapel Fisika/Kimia: menyusul, memakai mesin yang sama.
+- **Matematika Modul B2 — Pecahan, Desimal & Persen: SELESAI**
+  8 lesson + Uji Modul 10 soal, dengan visual batang pecahan dan grid 100 untuk persen.
+- Modul lain (B3–B6, Intermediate, Advanced) dan mapel Fisika/Kimia: menyusul, memakai mesin yang sama.
 
 ## Keputusan Desain
 

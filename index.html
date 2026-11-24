@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="color-scheme" content="light dark" />
 <link rel="icon" href="data:," />
-<title>Matematika Interaktif — Modul B1</title>
+<title>Matematika Interaktif — Modul B1 &amp; B2</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -145,6 +145,12 @@
   .result p{margin:0 0 10px}
   .practice-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
   footer{margin-top:36px;font-size:.82rem;color:var(--ink-soft);border-top:1px solid var(--line);padding-top:14px}
+  .fracbar{display:flex;gap:3px;margin:10px 0;max-width:360px}
+  .fracbar i{flex:1;height:26px;border:1.5px solid var(--line);border-radius:3px;background:var(--surface)}
+  .fracbar i.on{background:var(--teal)}
+  .pctgrid{display:grid;grid-template-columns:repeat(10,1fr);gap:2px;max-width:230px;margin:10px 0}
+  .pctgrid i{aspect-ratio:1;background:var(--surface);border:1px solid var(--line);border-radius:2px}
+  .pctgrid i.on{background:var(--teal)}
   /* ===== TEMA BUKU LATIHAN — kertas grid & tinta ===== */
   :root{
     --bg:#e9edf3; --surface:#fffef8; --surface2:#eef1f8; --ink:#1b2340; --ink-soft:#4b587c;
@@ -246,12 +252,12 @@
 <body>
 <div class="wrap">
 
-  <div class="crumb"><span>Matematika</span> <span>›</span> <span>Level Basic (setara SD)</span> <span>›</span> <b>Modul B1</b></div>
-  <h1>Bilangan &amp; Operasi Dasar</h1>
-  <p class="lede">Modul pertama Matematika Interaktif. Konsepnya dilihat dan diutak-atik dulu, rumusnya datang belakangan. Semua lesson terbuka — boleh mulai dari mana saja, tidak ada yang terkunci. Angka soal diacak setiap kali latihan, jadi jawaban tidak bisa dihafal.</p>
+  <div class="crumb"><span>Matematika</span> <span>›</span> <span>Level Basic (setara SD)</span> <span>›</span> <b id="crumbMod">Modul B1</b></div>
+  <h1 id="pageTitle">Bilangan &amp; Operasi Dasar</h1>
+  <p class="lede" id="ledeText">Modul pertama Matematika Interaktif. Konsepnya dilihat dan diutak-atik dulu, rumusnya datang belakangan. Semua lesson terbuka — boleh mulai dari mana saja, tidak ada yang terkunci. Angka soal diacak setiap kali latihan, jadi jawaban tidak bisa dihafal.</p>
 
   <div class="overall">
-    <span class="pct" id="overallPct">0 dari 8 bagian dikuasai</span>
+    <span class="pct" id="overallPct">0 dari 17 bagian dikuasai</span>
     <div class="bar"><i id="overallBar"></i></div>
     <span class="note">Status “Dikuasai” = skor ≥ 80% tanpa petunjuk lapis 3. Hanya penanda progres, bukan gerbang.</span>
   </div>
@@ -260,7 +266,7 @@
     <!-- ============ MAP ============ -->
     <aside class="map" aria-label="Peta silabus Matematika">
       <h2>Peta Matematika</h2>
-      <p class="open-note">21 modul · 111 lesson. Semua terbuka, urutan di bawah hanya saran jalur. Modul B1 lengkap bisa dimainkan sekarang; modul lain menyusul.</p>
+      <p class="open-note">21 modul · 111 lesson. Semua terbuka, urutan di bawah hanya saran jalur. Modul B1 dan B2 lengkap bisa dimainkan sekarang (15 lesson + 2 uji modul); modul lain menyusul.</p>
       <div id="mapRoot"></div>
     </aside>
 
@@ -291,7 +297,7 @@
     </main>
   </div>
 
-  <footer>Matematika Interaktif — MVP Modul B1 · Kurikulum evergreen (disusun dari logika materi, bukan kurikulum resmi) · Fisika &amp; Kimia menyusul dengan mesin yang sama · Progres tersimpan selama halaman ini terbuka.</footer>
+  <footer>Matematika Interaktif — MVP Modul B1 &amp; B2 · Kurikulum evergreen (disusun dari logika materi, bukan kurikulum resmi) · Fisika &amp; Kimia menyusul dengan mesin yang sama · Progres tersimpan selama halaman ini terbuka.</footer>
 </div>
 
 <script>
@@ -681,6 +687,486 @@ function updateOverall(){
   document.getElementById('overallPct').textContent=done+' dari 8 bagian dikuasai';
   document.getElementById('overallBar').style.width=(done/8*100)+'%';
 }
+
+/* ================= MODUL B2 — Pecahan, Desimal & Persen ================= */
+function frSimp(n,d){var g=gcd(Math.abs(n),Math.abs(d));return [n/g,d/g];}
+function decID(x){return String(x).replace('.',',');}
+
+/* ---------- B2.1 Pecahan sebagai bagian dari keseluruhan ---------- */
+function gB21a(){var T=pick([4,5,6,8,9,10,12]);var S=ri(1,T-1);
+  var opts=shuffle([{t:S+'/'+T,ok:1},{t:T+'/'+S,ok:0},{t:S+'/'+(T+S),ok:0}]);
+  return {type:'pg',fracBar:{total:T,shaded:S},ask:'Batang di bawah dibagi menjadi <span class="big">'+T+'</span> bagian sama besar, dan <span class="big">'+S+'</span> bagian terarsir. Pecahan yang menunjukkan bagian terarsir adalah…',options:opts.map(function(o){return o.t;}),correct:opts.findIndex(function(o){return o.ok;}),
+  hints:['Pecahan ditulis pembilang/penyebut: yang di atas = bagian yang diambil/diarsir, yang di bawah = seluruh bagian.','Terarsir '+S+' bagian dari total '+T+' bagian.','Jadi pecahannya '+S+'/'+T+'.'],
+  sol:'Terarsir '+S+' dari '+T+' bagian sama besar → <b>'+S+'/'+T+'</b>. Pembilang (atas) = yang terarsir, penyebut (bawah) = total bagian.',
+  diag:'Jangan terbalik: penyebut selalu total bagian keseluruhan, pembilang yang terarsir/diambil.'};}
+function gB21b(){var D=pick([5,6,8,9,10,12]);var N=ri(1,D-1);
+  return {type:'steps',ask:'Sebuah kue dibagi menjadi <span class="big">'+D+'</span> potong sama besar. Dina mengambil <span class="big">'+N+'</span> potong. Tulis pecahan bagian kue yang diambil Dina:',
+  steps:[{label:'Pembilang (potong yang diambil)',answer:N},{label:'Penyebut (seluruh potong kue)',answer:D}],
+  hints:['Pembilang = yang diambil, penyebut = seluruhnya.','Diambil '+N+' potong, seluruhnya '+D+' potong.','Pecahannya '+N+'/'+D+'.'],
+  sol:'Diambil '+N+' dari '+D+' potong → <b>'+N+'/'+D+'</b>.',
+  diag:'Pembilang dan penyebut tertukar? Yang di bawah selalu keseluruhan.'};}
+function gB21c(){var D=pick([4,5,6,8]);var N=ri(1,D-1);
+  var opts=shuffle([{t:'Satu benda dibagi '+D+' sama besar, lalu diambil '+N+' bagian',ok:1},{t:'Satu benda dibagi '+N+' sama besar, lalu diambil '+D+' bagian',ok:0},{t:'Hasil dari '+N+' + '+D,ok:0}]);
+  return {type:'pg',ask:'Pecahan <span class="big">'+N+'/'+D+'</span> artinya…',options:opts.map(function(o){return o.t;}),correct:opts.findIndex(function(o){return o.ok;}),
+  hints:['Penyebut '+D+' memberi tahu dibagi menjadi berapa bagian. Pembilang '+N+' memberi tahu berapa yang diambil.','Dibagi '+D+', diambil '+N+'.','Itulah arti '+N+'/'+D+'.'],
+  sol:'<b>'+N+'/'+D+'</b> = dibagi '+D+' sama besar, diambil '+N+'. Penyebut = pembagi, pembilang = yang diambil.',
+  diag:'Urutan bacanya: penyebut dulu (dibagi berapa), baru pembilang (diambil berapa).'};}
+function gB21d(){var D=pick([5,7,9,11,12]);var N=ri(1,D-1);var askTop=Math.random()<0.5;
+  return {type:'num',ask:'Pada pecahan <span class="big">'+N+'/'+D+'</span>, berapa '+(askTop?'<b>pembilang</b>nya (angka di atas)?':'<b>penyebut</b>nya (angka di bawah)?'),answer:askTop?N:D,
+  hints:['Pembilang di atas garis, penyebut di bawah garis.','Di sini pembilang = '+N+', penyebut = '+D+'.','Yang ditanya: '+(askTop?N:D)+'.'],
+  sol:'Pada '+N+'/'+D+': pembilang = '+N+' (atas), penyebut = '+D+' (bawah). Jawaban: <b>'+(askTop?N:D)+'</b>.',
+  diag:'Pembilang itu yang di atas, penyebut yang di bawah — jangan tertukar.'};}
+function gB21e(){var B=pick([2,3,4,5,6]);var q=ri(1,3);var r=ri(1,B-1);var A=q*B+r;
+  return {type:'steps',ask:'Pecahan <span class="big">'+A+'/'+B+'</span> lebih besar dari 1 (pembilangnya melebihi penyebut). Ubah menjadi bilangan campuran — berapa bagian bulatnya dan berapa sisa pembilangnya? (Penyebut tetap '+B+'.)',
+  steps:[{label:'Bilangan bulat (berapa kali '+B+' muat penuh di '+A+')',answer:q},{label:'Sisa pembilang (yang tidak muat jadi bulatan penuh)',answer:r}],
+  hints:['Bagi '+A+' dengan '+B+': berapa kali muat penuh, sisa berapa.',''+B+' × '+q+' = '+(q*B)+', dekat ke '+A+' tapi tidak lebih.',''+A+' = '+q+' × '+B+' + '+r+' → '+q+' bulat dan sisa '+r+'/'+B+'.'],
+  sol:A+'/'+B+' = <b>'+q+' '+r+'/'+B+'</b>: ada '+q+' bulatan penuh dan sisa '+r+' potong dari '+B+'.',
+  diag:'Bilangan campuran = hasil bagi (bulat) dan sisa pembagian pembilang ÷ penyebut.'};}
+
+/* ---------- B2.2 Pecahan senilai & menyederhanakan ---------- */
+function gB22a(){var pr=pick([[1,2],[1,3],[2,3],[1,4],[3,4],[2,5],[3,5],[1,6],[5,6]]);var a=pr[0],b=pr[1];var k=ri(2,6);
+  return {type:'num',ask:'Pecahan senilai: <span class="big">'+a+'/'+b+' = □/'+(b*k)+'</span>. Berapa □?',answer:a*k,
+  hints:['Penyebut berubah dari '+b+' menjadi '+(b*k)+' — dikali '+k+'. Pembilang harus diperlakukan sama.','Kalikan pembilang dengan '+k+' juga: '+a+' × '+k+'.','□ = '+a+' × '+k+' = '+(a*k)+'.'],
+  sol:'Penyebut × '+k+', jadi pembilang juga × '+k+': '+a+' × '+k+' = <b>'+(a*k)+'</b>. Mengali pembilang dan penyebut dengan angka yang sama tidak mengubah nilai pecahan.',
+  diag:'Aturan senilai: apa yang dilakukan ke penyebut, wajib dilakukan juga ke pembilang.'};}
+function gB22b(){var pr=pick([[1,2],[1,3],[2,3],[1,4],[3,4],[2,5],[3,5],[4,5],[1,6],[5,6],[2,7],[3,8]]);var k=ri(2,6);var n=pr[0]*k,d=pr[1]*k;
+  return {type:'steps',ask:'Sederhanakan pecahan <span class="big">'+n+'/'+d+'</span> ke bentuk paling sederhana:',
+  steps:[{label:'Pembilang paling sederhana',answer:pr[0]},{label:'Penyebut paling sederhana',answer:pr[1]}],
+  hints:['Cari FPB dari '+n+' dan '+d+', lalu bagi keduanya dengan FPB itu.','FPB('+n+', '+d+') = '+k+'. Bagi: '+n+' ÷ '+k+' dan '+d+' ÷ '+k+'.','Hasilnya '+pr[0]+'/'+pr[1]+'.'],
+  sol:n+'/'+d+' — bagi pembilang dan penyebut dengan FPB '+k+': <b>'+pr[0]+'/'+pr[1]+'</b>. Bentuk ini tidak bisa dibagi lagi dengan angka yang sama.',
+  diag:'Menyederhanakan = membagi pembilang DAN penyebut dengan FPB-nya. Membagi salah satu saja mengubah nilainya.'};}
+function gB22c(){var pr=pick([[1,2],[2,3],[3,4],[2,5],[3,5]]);var a=pr[0],b=pr[1];var k=ri(2,5);
+  var opts=shuffle([{t:(a*k)+'/'+(b*k),ok:1},{t:(a+k)+'/'+(b+k),ok:0},{t:a+'/'+(b*k),ok:0}]);
+  return {type:'pg',ask:'Manakah pecahan yang <b>senilai</b> dengan <span class="big">'+a+'/'+b+'</span>?',options:opts.map(function(o){return o.t;}),correct:opts.findIndex(function(o){return o.ok;}),
+  hints:['Senilai artinya pembilang dan penyebut dikali (atau dibagi) angka yang sama.','Cek tiap pilihan: apakah pembilang dan penyebutnya hasil kali yang sama dari '+a+'/'+b+'?',''+a+'/'+b+' × '+k+'/'+k+' = '+(a*k)+'/'+(b*k)+'.'],
+  sol:'Hanya <b>'+(a*k)+'/'+(b*k)+'</b> yang pembilang dan penyebutnya sama-sama dikali '+k+'. Menambah angka yang sama TIDAK menghasilkan pecahan senilai.',
+  diag:'Senilai didapat dari perkalian/pembagian bersama — bukan penambahan bersama.'};}
+function gB22d(){var pr=pick([[2,4],[3,6],[4,6],[6,8],[4,10],[6,9],[8,12],[9,12],[10,15],[6,10]]);var n=pr[0],d=pr[1];var g=gcd(n,d);
+  return {type:'num',ask:'Untuk menyederhanakan <span class="big">'+n+'/'+d+'</span> dalam sekali langkah, pembilang dan penyebut harus dibagi dengan FPB-nya. Berapa FPB dari '+n+' dan '+d+'?',answer:g,
+  hints:['FPB = faktor persekutuan terbesar: pembagi bersama terbesar kedua angka.','Faktor '+n+': '+factors(n).join(', ')+'. Faktor '+d+': '+factors(d).join(', ')+'.','Yang sama dan terbesar = '+g+'.'],
+  sol:'FPB('+n+', '+d+') = <b>'+g+'</b>. Membagi keduanya dengan '+g+' langsung memberi bentuk paling sederhana: '+frSimp(n,d)[0]+'/'+frSimp(n,d)[1]+'.',
+  diag:'FPB dicari dari faktor (pembagi habis), sama seperti di B1.6.'};}
+function gB22e(){
+  var opts=shuffle([{t:'3/5 — pembilang & penyebut tidak punya faktor bersama selain 1',ok:1},{t:'6/10 — masih bisa dibagi 2',ok:0},{t:'9/15 — masih bisa dibagi 3',ok:0}]);
+  return {type:'pg',ask:'Manakah pecahan yang <b>sudah paling sederhana</b>?',options:opts.map(function(o){return o.t;}),correct:opts.findIndex(function(o){return o.ok;}),
+  hints:['Paling sederhana = FPB pembilang dan penyebutnya 1, tidak bisa dibagi lagi.','Cek FPB tiap pilihan: 6/10 → 2, 9/15 → 3, 3/5 → 1.','Hanya 3/5 yang FPB-nya 1.'],
+  sol:'<b>3/5</b> paling sederhana karena FPB(3, 5) = 1. Yang lain masih bisa dikecilkan: 6/10 = 3/5 dan 9/15 = 3/5 — ketiganya sebenarnya senilai!',
+  diag:'Uji tiap pecahan dengan FPB pembilang–penyebutnya: FPB 1 berarti sudah mentok sederhana.'};}
+
+/* ---------- B2.3 Membandingkan & mengurutkan pecahan ---------- */
+function gB23a(){var d=pick([5,6,7,8,9,10,12]);var a=ri(1,d-1),b;do{b=ri(1,d-1);}while(b===a);var big=Math.max(a,b);
+  var opts=shuffle([a+'/'+d,b+'/'+d]);return {type:'pg',ask:'Pecahan mana yang lebih besar?',options:opts,correct:opts.indexOf(big+'/'+d),
+  hints:['Penyebutnya sama ('+d+'): potongannya sama besar, jadi tinggal bandingkan berapa potong yang diambil.','Pembilangnya '+a+' vs '+b+' — yang lebih banyak potongnya yang menang.','Yang lebih besar: '+big+'/'+d+'.'],
+  sol:'Penyebut sama → bandingkan pembilang: <b>'+big+'/'+d+'</b> lebih besar.',
+  diag:'Kalau penyebut sama, jangan terkecoh: pembilang lebih besar = pecahan lebih besar.'};}
+function gB23b(){var n=pick([1,2,3]);var d1=pick([3,4,5]),d2=pick([6,7,8,9,10]);var big=n+'/'+d1;
+  var opts=shuffle([n+'/'+d1,n+'/'+d2]);return {type:'pg',ask:'Pecahan mana yang lebih besar?',options:opts,correct:opts.indexOf(big),
+  hints:['Pembilangnya sama ('+n+'): sama-sama mengambil '+n+' potong. Bedanya di ukuran potong.','Penyebut kecil = dibagi sedikit = potongnya BESAR. Penyebut besar = potongnya kecil-kecil.','Jadi '+n+'/'+d1+' (potong besar) lebih besar dari '+n+'/'+d2+'.'],
+  sol:'Pembilang sama → penyebut lebih kecil menang, karena potongnya lebih besar: <b>'+big+'</b>.',
+  diag:'Ini jebakan klasik: penyebut besar justru membuat pecahan lebih KECIL (kue yang sama dibagi ke lebih banyak orang).'};}
+function gB23c(){var a,b,c,d,tries=0;do{a=ri(1,7);b=pick([3,4,5,6,8]);c=ri(1,7);d=pick([3,4,5,6,8]);tries++;}while((a>=b||c>=d||a*d===c*b)&&tries<80);
+  var s1=a+'/'+b,s2=c+'/'+d;var big=(a*d>c*b)?s1:s2;var opts=shuffle([s1,s2]);
+  return {type:'pg',ask:'Pecahan mana yang lebih besar?',options:opts,correct:opts.indexOf(big),
+  hints:['Penyebutnya beda: samakan dulu, atau pakai kali silang: bandingkan '+a+' × '+d+' dengan '+c+' × '+b+'.','Kali silang: '+a+' × '+d+' = '+(a*d)+' vs '+c+' × '+b+' = '+(c*b)+'.','Yang hasil kali silangnya lebih besar, pecahannya lebih besar: '+big+'.'],
+  sol:'Kali silang: '+a+'/'+b+' → '+(a*d)+', '+c+'/'+d+' → '+(c*b)+'. Lebih besar: <b>'+big+'</b>.',
+  diag:'Penyebut beda tidak bisa dibandingkan dari pembilang saja — samakan penyebut atau kali silang.'};}
+function gB23d(){var pr=pick([[1,2],[1,3],[2,3],[1,4],[3,4],[1,5],[2,5]]);var a=pr[0],b=pr[1];var k=pick([3,4,5,6]);
+  return {type:'num',ask:'Ubah <span class="big">'+a+'/'+b+'</span> menjadi pecahan berpenyebut <span class="big">'+(b*k)+'</span>. Berapa pembilang barunya?',answer:a*k,
+  hints:['Penyebut '+b+' → '+(b*k)+' artinya dikali '+k+'. Lakukan yang sama ke pembilang.','Pembilang baru = '+a+' × '+k+'.','Hasilnya '+a+' × '+k+' = '+(a*k)+', jadi pecahannya '+(a*k)+'/'+(b*k)+'.'],
+  sol:'Penyebut dikali '+k+', pembilang ikut: '+a+' × '+k+' = <b>'+(a*k)+'</b>. Ini keterampilan kunci sebelum menjumlah pecahan beda penyebut.',
+  diag:'Menyamakan penyebut = mencari pecahan senilai, aturannya sama seperti B2.2.'};}
+function gB23e(){var d=pick([8,9,10,12]);var ns=shuffle([ri(1,3),ri(4,6),ri(7,d-1)]);var small=Math.min(ns[0],ns[1],ns[2])+'/'+d;
+  var opts=shuffle(ns.map(function(n){return {t:n+'/'+d,ok:(n+'/'+d===small)};}));
+  return {type:'pg',ask:'Manakah pecahan yang <b>paling kecil</b>?',options:opts.map(function(o){return o.t;}),correct:opts.findIndex(function(o){return o.ok;}),
+  hints:['Semua penyebutnya sama ('+d+'), jadi cukup cari pembilang terkecil.','Pembilangnya: '+ns.join(', ')+'. Terkecil = '+small.split('/')[0]+'.','Paling kecil: '+small+'.'],
+  sol:'Penyebut sama → pembilang terkecil = pecahan terkecil: <b>'+small+'</b>.',
+  diag:'Penyebut sama membuat perbandingan jadi perbandingan pembilang biasa.'};}
+
+/* ---------- B2.4 Penjumlahan & pengurangan pecahan ---------- */
+function gB24a(){var d=pick([5,6,8,9,10,12]);var a=ri(1,4),b=ri(1,4);var s=frSimp(a+b,d);
+  return {type:'steps',ask:'Hitung dan sederhanakan: <span class="big">'+a+'/'+d+' + '+b+'/'+d+'</span> =',
+  steps:[{label:'Pembilang hasil (paling sederhana)',answer:s[0]},{label:'Penyebut hasil (paling sederhana)',answer:s[1]}],
+  hints:['Penyebut sudah sama: jumlahkan pembilangnya saja, penyebut tetap.','Pembilang: '+a+' + '+b+' = '+(a+b)+', jadi hasilnya '+(a+b)+'/'+d+(s[0]!==a+b?' lalu sederhanakan menjadi '+s[0]+'/'+s[1]+'.':'.'),'Hasil akhir: '+s[0]+'/'+s[1]+'.'],
+  sol:'Penyebut sama → pembilang dijumlah: '+(a+b)+'/'+d+' = <b>'+s[0]+'/'+s[1]+'</b>. Penyebut TIDAK ikut dijumlah — kesalahan paling umum di topik ini.',
+  diag:'Kalau penyebutmu ikut bertambah, itu jebakannya: penyebut menyatakan ukuran potong, bukan jumlah potong.'};}
+function gB24b(){var pair=pick([[2,3],[3,4],[2,5],[3,5],[4,5],[2,4],[3,6]]);var d1=pair[0],d2=pair[1];var n1=ri(1,d1-1),n2=ri(1,d2-1);var L=lcm(d1,d2);var num=n1*(L/d1)+n2*(L/d2);var s=frSimp(num,L);
+  return {type:'steps',ask:'Hitung dan sederhanakan: <span class="big">'+n1+'/'+d1+' + '+n2+'/'+d2+'</span> = (Samakan penyebutnya dulu ke '+L+'.)',
+  steps:[{label:'Pembilang hasil (paling sederhana)',answer:s[0]},{label:'Penyebut hasil (paling sederhana)',answer:s[1]}],
+  hints:['Samakan penyebut ke KPK '+L+': ubah tiap pecahan jadi pecahan senilai berpenyebut '+L+'.',''+n1+'/'+d1+' = '+(n1*(L/d1))+'/'+L+' dan '+n2+'/'+d2+' = '+(n2*(L/d2))+'/'+L+'. Jumlah pembilang: '+num+', jadi '+num+'/'+L+' = '+s[0]+'/'+s[1]+'.','Hasil akhir: '+s[0]+'/'+s[1]+'.'],
+  sol:'Penyebut sama '+L+': '+(n1*(L/d1))+'/'+L+' + '+(n2*(L/d2))+'/'+L+' = '+num+'/'+L+' → disederhanakan <b>'+s[0]+'/'+s[1]+'</b>.',
+  diag:'Dua langkah yang sering tertukar: (1) samakan penyebut lewat pecahan senilai, (2) jumlahkan pembilang saja.'};}
+function gB24c(){var d=pick([6,7,8,9,10,12]);var a=ri(4,d-1),b=ri(1,a-1);var s=frSimp(a-b,d);
+  return {type:'steps',ask:'Hitung dan sederhanakan: <span class="big">'+a+'/'+d+' − '+b+'/'+d+'</span> =',
+  steps:[{label:'Pembilang hasil (paling sederhana)',answer:s[0]},{label:'Penyebut hasil (paling sederhana)',answer:s[1]}],
+  hints:['Penyebut sudah sama: kurangkan pembilangnya saja.','Pembilang: '+a+' − '+b+' = '+(a-b)+', jadi '+(a-b)+'/'+d+(s[0]!==a-b?' → sederhanakan: '+s[0]+'/'+s[1]+'.':'.'),'Hasil akhir: '+s[0]+'/'+s[1]+'.'],
+  sol:a+'/'+d+' − '+b+'/'+d+' = '+(a-b)+'/'+d+' = <b>'+s[0]+'/'+s[1]+'</b>.',
+  diag:'Sama seperti penjumlahan: penyebut tetap, yang bergerak hanya pembilang.'};}
+function gB24d(){var d=pick([6,8,9,10,12]);var a=ri(2,5),b=ri(1,4);
+  return {type:'num',ask:'Lengkapi: <span class="big">'+a+'/'+d+' + '+b+'/'+d+' = □/'+d+'</span>. Berapa □? (Belum perlu disederhanakan.)',answer:a+b,
+  hints:['Penyebut sama dan tetap '+d+'. Yang berubah hanya pembilang.','□ = '+a+' + '+b+'.','□ = '+(a+b)+'.'],
+  sol:'□ = '+a+' + '+b+' = <b>'+(a+b)+'</b>, hasilnya '+(a+b)+'/'+d+'.',
+  diag:'Fokus soal ini satu: pada penyebut sama, pembilang yang dijumlah, penyebut diam.'};}
+function gB24e(){var d=pick([6,8,10,12]);var a=ri(2,d-3);var s=frSimp(d-a,d);
+  return {type:'steps',ask:'Satu loyang kue utuh ditulis sebagai <span class="big">'+d+'/'+d+'</span>. Sebanyak <span class="big">'+a+'/'+d+'</span> sudah dimakan. Berapa pecahan kue yang tersisa? (Sederhanakan.)',
+  steps:[{label:'Pembilang sisa (paling sederhana)',answer:s[0]},{label:'Penyebut sisa (paling sederhana)',answer:s[1]}],
+  hints:['Sisa = utuh − yang dimakan = '+d+'/'+d+' − '+a+'/'+d+'.','Pembilang sisa: '+d+' − '+a+' = '+(d-a)+', jadi '+(d-a)+'/'+d+'.','Sederhanakan: '+s[0]+'/'+s[1]+'.'],
+  sol:'Sisa = '+(d-a)+'/'+d+' = <b>'+s[0]+'/'+s[1]+'</b> loyang.',
+  diag:'“Utuh” dalam pecahan berpenyebut '+d+' ditulis '+d+'/'+d+' — dari situ pengurangannya jadi penyebut sama.'};}
+
+/* ---------- B2.5 Perkalian & pembagian pecahan ---------- */
+function gB25a(){var a=ri(1,5),b=pick([2,3,4,5,6]),c=ri(1,5),d=pick([2,3,4,5,6]);var s=frSimp(a*c,b*d);
+  return {type:'steps',ask:'Hitung dan sederhanakan: <span class="big">'+a+'/'+b+' × '+c+'/'+d+'</span> =',
+  steps:[{label:'Pembilang hasil (paling sederhana)',answer:s[0]},{label:'Penyebut hasil (paling sederhana)',answer:s[1]}],
+  hints:['Perkalian pecahan itu lurus-lurus saja: pembilang × pembilang, penyebut × penyebut. Tidak perlu menyamakan penyebut.','Pembilang: '+a+' × '+c+' = '+(a*c)+'. Penyebut: '+b+' × '+d+' = '+(b*d)+'. Lalu sederhanakan '+(a*c)+'/'+(b*d)+'.','Hasil akhir: '+s[0]+'/'+s[1]+'.'],
+  sol:a+'/'+b+' × '+c+'/'+d+' = '+(a*c)+'/'+(b*d)+' = <b>'+s[0]+'/'+s[1]+'</b>.',
+  diag:'Perkalian TIDAK butuh penyebut sama — itu syarat penjumlahan/pengurangan. Di sini kalikan lurus atas–atas, bawah–bawah.'};}
+function gB25b(){var a=ri(1,5),b=pick([2,3,4,5,6]),c=ri(1,5),d=pick([2,3,4,5,6]);var s=frSimp(a*d,b*c);
+  return {type:'steps',ask:'Hitung dan sederhanakan: <span class="big">'+a+'/'+b+' ÷ '+c+'/'+d+'</span> = (Balik pecahan kedua, lalu kalikan.)',
+  steps:[{label:'Pembilang hasil (paling sederhana)',answer:s[0]},{label:'Penyebut hasil (paling sederhana)',answer:s[1]}],
+  hints:['Aturan pembagian pecahan: TETAPKAN yang pertama, BALIK yang kedua, lalu KALIKAN.',''+a+'/'+b+' ÷ '+c+'/'+d+' menjadi '+a+'/'+b+' × '+d+'/'+c+'.','Kalikan lurus: '+(a*d)+'/'+(b*c)+' → sederhanakan jadi '+s[0]+'/'+s[1]+'.'],
+  sol:a+'/'+b+' ÷ '+c+'/'+d+' = '+a+'/'+b+' × '+d+'/'+c+' = '+(a*d)+'/'+(b*c)+' = <b>'+s[0]+'/'+s[1]+'</b>.',
+  diag:'Yang dibalik hanya pecahan KEDUA (pembaginya). Membalik yang pertama adalah kesalahan paling sering di sini.'};}
+function gB25c(){var w=ri(2,9);var pr=pick([[1,2],[1,3],[2,3],[1,4],[3,4],[2,5],[3,5],[1,6],[5,6]]);var s=frSimp(w*pr[0],pr[1]);
+  return {type:'steps',ask:'Hitung dan sederhanakan: <span class="big">'+w+' × '+pr[0]+'/'+pr[1]+'</span> = (Bilangan bulat '+w+' boleh ditulis sebagai '+w+'/1.)',
+  steps:[{label:'Pembilang hasil (paling sederhana)',answer:s[0]},{label:'Penyebut hasil (paling sederhana)',answer:s[1]}],
+  hints:['Kalikan bilangan bulatnya ke pembilang saja: '+w+' × '+pr[0]+'. Penyebut tetap '+pr[1]+'.','Pembilang: '+w+' × '+pr[0]+' = '+(w*pr[0])+', jadi '+(w*pr[0])+'/'+pr[1]+'.','Sederhanakan: '+s[0]+'/'+s[1]+'.'],
+  sol:w+' × '+pr[0]+'/'+pr[1]+' = '+(w*pr[0])+'/'+pr[1]+' = <b>'+s[0]+'/'+s[1]+'</b>.',
+  diag:'Bilangan bulat mengali pecahan hanya menyentuh pembilang — penyebut menyatakan ukuran potong, tidak berubah.'};}
+function gB25d(){var a=ri(1,4),b=pick([3,4,5,6]),c=ri(1,4),d=pick([2,3,4,5]);var shown=['Langkah 1: pembilang × pembilang: '+a+' × '+c+' = '+(a*c),'Langkah 2: penyebut × penyebut: '+b+' × '+d+' = '+(b+d)+' (dijumlahkan)','Langkah 3: hasilnya '+(a*c)+'/'+(b+d)];
+  var s=frSimp(a*c,b*d);
+  return {type:'pg',ask:'Pengerjaan contoh ini <b>salah di satu langkah</b>. Di langkah mana letak salahnya?<br><span class="big">'+a+'/'+b+' × '+c+'/'+d+'</span><br>'+shown.join('<br>'),options:['Langkah 1','Langkah 2','Langkah 3 — tidak ada yang salah'],correct:1,
+  hints:['Periksa tiap langkah dengan hitunganmu sendiri.','Langkah 1 benar. Cek langkah 2: penyebut pada perkalian pecahan itu dikali atau dijumlah?','Langkah 2 salah: penyebut harus DIKALI: '+b+' × '+d+' = '+(b*d)+', bukan dijumlah.'],
+  sol:'Langkah 1 ✓. <b>Langkah 2 ✗</b>: penyebut dikali, bukan dijumlah: '+b+' × '+d+' = '+(b*d)+'. Hasil benar: '+(a*c)+'/'+(b*d)+' = <b>'+s[0]+'/'+s[1]+'</b>.',
+  diag:'Penjumlahan penyebut tidak pernah terjadi di operasi pecahan mana pun — penyebut hanya disamakan (tambah/kurang) atau dikali (kali/bagi).'};}
+function gB25e(){var a=ri(1,5),b=pick([2,3,4,5]),c=ri(1,5),d=pick([2,3,4,5]);
+  var opts=shuffle([{t:a+'/'+b+' × '+d+'/'+c+' (yang kedua dibalik)',ok:1},{t:a+'/'+b+' × '+c+'/'+d+' (dikalikan lurus tanpa dibalik)',ok:0},{t:d+'/'+c+' ÷ '+a+'/'+b+' (yang pertama dibalik)',ok:0}]);
+  return {type:'pg',ask:'Pembagian <span class="big">'+a+'/'+b+' ÷ '+c+'/'+d+'</span> setara dengan perkalian…',options:opts.map(function(o){return o.t;}),correct:opts.findIndex(function(o){return o.ok;}),
+  hints:['Aturannya: tetap, balik, kalikan. Yang dibalik hanya pecahan pembagi (yang kedua).','Yang pertama tetap '+a+'/'+b+'; yang kedua '+c+'/'+d+' dibalik menjadi '+d+'/'+c+'.','Jadi setara dengan '+a+'/'+b+' × '+d+'/'+c+'.'],
+  sol:'<b>'+a+'/'+b+' × '+d+'/'+c+'</b> — pecahan pertama tetap, pecahan kedua dibalik, tanda bagi jadi kali.',
+  diag:'Membagi dengan sebuah pecahan sama dengan mengali kebalikannya — dan yang dibalik selalu sang pembagi.'};}
+
+/* ---------- B2.6 Desimal & hubungannya dengan pecahan ---------- */
+var DECPAIRS=[[1,2],[1,4],[3,4],[1,5],[2,5],[3,5],[4,5],[1,8],[3,8],[5,8],[1,10],[3,10],[7,10],[9,10],[1,20],[3,20],[7,20],[1,25],[3,25],[6,25]];
+function gB26a(){var p=pick(DECPAIRS);var val=p[0]/p[1];
+  return {type:'num',dec:true,tol:0.001,ask:'Tulis <span class="big">'+p[0]+'/'+p[1]+'</span> sebagai bilangan desimal. (Tulis dengan titik, contoh: 0.75)',answer:val,
+  hints:['Bagi pembilang dengan penyebut: '+p[0]+' ÷ '+p[1]+'. Atau ubah jadi pecahan berpenyebut 100 dulu.',''+p[0]+'/'+p[1]+' = '+(p[0]*(100/p[1]))+'/100 bila penyebutnya membagi 100.','Desimalnya '+decID(val)+'.'],
+  sol:p[0]+'/'+p[1]+' = <b>'+decID(val)+'</b>. Desimal hanyalah pecahan berpenyebut 10, 100, 1000, … yang ditulis dengan koma.',
+  diag:'Pecahan → desimal selalu bisa lewat pembagian pembilang ÷ penyebut.'};}
+function gB26b(){var p=pick([[3,5],[1,4],[3,4],[1,5],[2,5],[4,5],[1,2],[3,10],[7,10],[1,8],[2,4],[5,10]]);var val=p[0]/p[1];var s=frSimp(p[0],p[1]);
+  return {type:'steps',ask:'Tulis desimal <span class="big">'+decID(val)+'</span> sebagai pecahan paling sederhana:',
+  steps:[{label:'Pembilang pecahan paling sederhana',answer:s[0]},{label:'Penyebut pecahan paling sederhana',answer:s[1]}],
+  hints:['Baca desimalnya sebagai pecahan per 10/per 100 dari angka di belakang koma, lalu sederhanakan.','Desimal ini senilai dengan '+p[0]+'/'+p[1]+' — bagi pembilang dan penyebutnya dengan FPB '+gcd(p[0],p[1])+'.','Paling sederhana: '+s[0]+'/'+s[1]+'.'],
+  sol:decID(val)+' senilai dengan '+p[0]+'/'+p[1]+' → disederhanakan <b>'+s[0]+'/'+s[1]+'</b>.',
+  diag:'Jembatan desimal–pecahan: 1 angka di belakang koma = per 10, 2 angka = per 100, lalu sederhanakan.'};}
+function gB26c(){var whole=ri(1,9);var t=ri(1,9),h=ri(1,9);var useT=Math.random()<0.5;var digit=useT?t:h;var place=useT?0.1:0.01;var val=digit*place;
+  return {type:'num',dec:true,tol:0.0001,ask:'Pada bilangan <span class="big">'+whole+','+t+''+h+'</span>, angka <span class="big">'+digit+'</span> berada di tempat '+(useT?'persepuluhan (satu angka di belakang koma)':'perseratusan (dua angka di belakang koma)')+'. Berapa <b>nilai</b> angka itu? (Tulis dengan titik, contoh: 0.07)',answer:val,
+  hints:['Sama seperti nilai tempat bilangan bulat, tapi di kanan koma tempatnya mengecil: persepuluh, perseratus, perseribu.','Angka '+digit+' di tempat '+(useT?'persepuluhan bernilai '+digit+' × 0,1.':'perseratusan bernilai '+digit+' × 0,01.'),'Nilainya '+decID(val)+'.'],
+  sol:'Angka '+digit+' di tempat '+(useT?'persepuluhan':'perseratusan')+' bernilai <b>'+decID(val)+'</b>.',
+  diag:'Nilai tempat tidak berhenti di satuan — ia berlanjut mengecil ke kanan koma dengan pola bagi 10 yang sama.'};}
+function gB26d(){var p=pick(DECPAIRS);var val=p[0]/p[1];var wrong1=val+0.1,wrong2=val*2===Math.floor(val*2)?val+0.25:val/2;
+  var opts=shuffle([{t:decID(val),ok:1},{t:decID(Math.round(wrong1*1000)/1000),ok:0},{t:decID(Math.round(wrong2*1000)/1000),ok:0}]);
+  return {type:'pg',ask:'Desimal manakah yang senilai dengan <span class="big">'+p[0]+'/'+p[1]+'</span>?',options:opts.map(function(o){return o.t;}),correct:opts.findIndex(function(o){return o.ok;}),
+  hints:['Ubah pecahannya jadi penyebut 100 (atau bagi pembilang dengan penyebut).',''+p[0]+'/'+p[1]+' → bagi: '+p[0]+' ÷ '+p[1]+'.','Hasilnya '+decID(val)+'.'],
+  sol:p[0]+'/'+p[1]+' = <b>'+decID(val)+'</b>.',
+  diag:'Selalu bisa dicek dengan pembagian langsung: pembilang ÷ penyebut.'};}
+function gB26e(){var ab=pick([13,17,23,29,37,41,53,67,71,83,97,11,19,31,43,59,73,89]);
+  return {type:'num',ask:'Lengkapi: <span class="big">0,'+ab+' = □/100</span>. Berapa □?',answer:ab,
+  hints:['Dua angka di belakang koma artinya “per seratus”.','0,'+ab+' dibaca “'+ab+' perseratus”.','□ = '+ab+'.'],
+  sol:'0,'+ab+' = <b>'+ab+'/100</b>. Jumlah angka di belakang koma menentukan penyebutnya: 1 angka → 10, 2 angka → 100, 3 angka → 1000.',
+  diag:'Koma desimal adalah singkatan penyebut pangkat sepuluh.'};}
+
+/* ---------- B2.7 Persen sebagai pecahan dari 100 ---------- */
+function gB27a(){var P=pick([10,20,25,30,40,50,60,70,75,80,90]);var s=frSimp(P,100);
+  return {type:'steps',ask:'Tulis <span class="big">'+P+'%</span> sebagai pecahan paling sederhana:',
+  steps:[{label:'Pembilang pecahan paling sederhana',answer:s[0]},{label:'Penyebut pecahan paling sederhana',answer:s[1]}],
+  hints:['Persen artinya “per seratus”: '+P+'% = '+P+'/100. Tinggal sederhanakan.','FPB('+P+', 100) = '+gcd(P,100)+'. Bagi keduanya.','Hasilnya '+s[0]+'/'+s[1]+'.'],
+  sol:P+'% = '+P+'/100 = <b>'+s[0]+'/'+s[1]+'</b>.',
+  diag:'Persen bukan satuan baru — ia pecahan berpenyebut 100 yang menyamar.'};}
+function gB27b(){var p=pick([[1,2],[1,4],[3,4],[1,5],[2,5],[3,5],[4,5],[1,10],[3,10],[7,10],[1,20],[3,20],[1,25],[2,25],[4,25],[1,50],[3,50]]);var pct=p[0]*100/p[1];
+  return {type:'num',ask:'Berapa persen pecahan <span class="big">'+p[0]+'/'+p[1]+'</span>? (Tulis angkanya saja, tanpa tanda %.)',answer:pct,
+  hints:['Ubah jadi penyebut 100: '+p[0]+'/'+p[1]+' senilai dengan □/100, dan □ itulah persennya.','Penyebut '+p[1]+' → 100 dikali '+(100/p[1])+', jadi pembilang jadi '+p[0]+' × '+(100/p[1])+' = '+pct+'.','Persennya '+pct+'%.'],
+  sol:p[0]+'/'+p[1]+' = '+pct+'/100 = <b>'+pct+'%</b>.',
+  diag:'Persen = pembilang setelah penyebut dibuat 100.'};}
+function gB27c(){var combos=[[25,80],[25,120],[50,90],[20,150],[10,300],[75,200],[30,200],[40,250],[60,150],[15,400]];var c=pick(combos);var P=c[0],Q=c[1];
+  return {type:'num',ask:'Berapa <span class="big">'+P+'%</span> dari <span class="big">'+fmt(Q)+'</span>?',answer:P*Q/100,
+  hints:['“P% dari Q” = P/100 × Q.','Hitung: '+P+'/100 × '+Q+' = ('+Q+' ÷ 100) × '+P+'.','Hasilnya '+fmt(P*Q/100)+'.'],
+  sol:P+'% × '+fmt(Q)+' = <b>'+fmt(P*Q/100)+'</b>. Cara cepat: cari 10%-nya dulu ('+fmt(Q/10)+'), lalu susun dari sana.',
+  diag:'Persen dari sebuah jumlah selalu perkalian: persen (sebagai pecahan) × jumlahnya.'};}
+function gB27d(){var P=pick([10,20,25,30,40,50,60,70,75,80,90]);
+  return {type:'num',pctGrid:P,ask:'Grid 10 × 10 di bawah berisi 100 kotak. Berapa persen kotak yang terarsir? (Tulis angkanya saja.)',answer:P,
+  hints:['Total kotak 100, jadi tiap kotak = 1%. Tinggal hitung yang terarsir.','Hitung per baris penuh dulu, lalu baris terakhir yang sebagian.','Terarsir '+P+' kotak = '+P+'%.'],
+  sol:'Terarsir <b>'+P+'</b> dari 100 kotak = '+P+'%. Inilah arti harfiah persen: per seratus.',
+  diag:'Pada grid 100, persen dan jumlah kotak terarsir adalah angka yang sama.'};}
+function gB27e(){
+  var opts=shuffle([{t:'75 dari setiap 100 — sama dengan 75/100 = 3/4',ok:1},{t:'75 dari setiap 1000',ok:0},{t:'7,5 dari setiap 100',ok:0}]);
+  return {type:'pg',ask:'<span class="big">75%</span> artinya…',options:opts.map(function(o){return o.t;}),correct:opts.findIndex(function(o){return o.ok;}),
+  hints:['“Persen” berasal dari per centum: per seratus.','75% = 75 per 100.','Sebagai pecahan: 75/100, disederhanakan 3/4.'],
+  sol:'75% = <b>75/100 = 3/4</b>. Tiga perempat dari sesuatu dan 75%-nya adalah hal yang sama.',
+  diag:'Persen selalu berpangku pada 100, bukan 1000.'};}
+
+/* ---------- B2.8 Pecahan–desimal–persen dalam soal sehari-hari ---------- */
+function gB28a(){var combos=[[80000,25],[120000,10],[150000,20],[200000,25],[60000,50],[90000,30],[250000,20],[50000,10]];var c=pick(combos);var price=c[0],P=c[1];var pot=price*P/100;
+  return {type:'steps',ask:'Sebuah tas berharga <span class="big">Rp'+fmt(price)+'</span> dan didiskon <span class="big">'+P+'%</span>. Kerjakan dua langkah:',
+  steps:[{label:'Langkah 1 — besar potongan harga (Rp)',answer:pot},{label:'Langkah 2 — harga yang dibayar (Rp)',answer:price-pot}],
+  hints:['Potongan = '+P+'% × Rp'+fmt(price)+'.','Potongan: '+P+'/100 × '+fmt(price)+' = Rp'+fmt(pot)+'.','Bayar: '+fmt(price)+' − '+fmt(pot)+' = Rp'+fmt(price-pot)+'.'],
+  sol:'Potongan Rp'+fmt(pot)+', jadi yang dibayar <b>Rp'+fmt(price-pot)+'</b>. Diskon '+P+'% artinya kamu membayar '+(100-P)+'% dari harga awal.',
+  diag:'Diskon dihitung dari harga awal, lalu dikurangkan — yang dibayar bukan sebesar persen diskonnya.'};}
+function gB28b(){var combos=[[50000,2,5],[60000,1,3],[90000,2,3],[40000,3,8],[80000,3,4],[100000,2,5],[75000,1,3]];var c=pick(combos);var U=c[0],fn=c[1],fd=c[2];var pakai=U*fn/fd;
+  return {type:'steps',ask:'Rani punya uang <span class="big">Rp'+fmt(U)+'</span>. Ia memakai <span class="big">'+fn+'/'+fd+'</span> dari uangnya untuk membeli buku. Kerjakan dua langkah:',
+  steps:[{label:'Langkah 1 — uang yang dipakai (Rp)',answer:pakai},{label:'Langkah 2 — sisa uang Rani (Rp)',answer:U-pakai}],
+  hints:['Yang dipakai = '+fn+'/'+fd+' × Rp'+fmt(U)+'. Bagi dulu, baru kali: '+fmt(U)+' ÷ '+fd+' = Rp'+fmt(U/fd)+'.','Dipakai: '+fmt(U/fd)+' × '+fn+' = Rp'+fmt(pakai)+'.','Sisa: '+fmt(U)+' − '+fmt(pakai)+' = Rp'+fmt(U-pakai)+'.'],
+  sol:'Dipakai Rp'+fmt(pakai)+', sisa <b>Rp'+fmt(U-pakai)+'</b>. Pecahan dari uang selalu dihitung: bagi dengan penyebut, kali dengan pembilang.',
+  diag:'“'+fn+'/'+fd+' dari uang” adalah perkalian pecahan × jumlah — bukan pengurangan '+fn+'/'+fd+' rupiah.'};}
+function gB28c(){var d=pick([8,10,12]);var a=ri(1,3),b=ri(1,3);var s=frSimp(d-a-b,d);
+  return {type:'steps',ask:'Satu loyang pizza dibagi <span class="big">'+d+'</span> potong sama besar. Siang hari dimakan <span class="big">'+a+'</span> potong, malam hari dimakan <span class="big">'+b+'</span> potong. Berapa pecahan pizza yang tersisa? (Sederhanakan.)',
+  steps:[{label:'Pembilang sisa (paling sederhana)',answer:s[0]},{label:'Penyebut sisa (paling sederhana)',answer:s[1]}],
+  hints:['Total dimakan '+(a+b)+' potong dari '+d+'. Sisa potong: '+d+' − '+(a+b)+' = '+(d-a-b)+'.','Sisa sebagai pecahan: '+(d-a-b)+'/'+d+'.','Sederhanakan: '+s[0]+'/'+s[1]+'.'],
+  sol:'Sisa '+(d-a-b)+' potong dari '+d+' = '+(d-a-b)+'/'+d+' = <b>'+s[0]+'/'+s[1]+'</b>.',
+  diag:'Kerjakan dulu dalam satuan potong, baru terjemahkan ke pecahan di akhir.'};}
+function gB28d(){var combos=[[40,30],[20,15],[50,40],[25,20],[40,28],[50,45],[20,12],[30,24]];var c=pick(combos);var T=c[0],B=c[1];var s=frSimp(B,T);var pct=B*100/T;
+  return {type:'steps',ask:'Dari <span class="big">'+T+'</span> soal ujian, Sinta menjawab benar <span class="big">'+B+'</span> soal. Nyatakan prestasinya dalam tiga bentuk:',
+  steps:[{label:'Pembilang pecahan benar (paling sederhana)',answer:s[0]},{label:'Penyebut pecahan benar (paling sederhana)',answer:s[1]},{label:'Persen jawaban benar (angka saja)',answer:pct}],
+  hints:['Pecahan benar = '+B+'/'+T+', lalu sederhanakan.',''+B+'/'+T+' = '+s[0]+'/'+s[1]+'. Untuk persen, ubah penyebutnya jadi 100.','Persennya '+pct+'%.'],
+  sol:B+'/'+T+' = <b>'+s[0]+'/'+s[1]+'</b> = <b>'+pct+'%</b>. Satu kenyataan, tiga pakaian: pecahan, dan persen — desimalnya '+decID(B/T)+'.',
+  diag:'Ketiga bentuk itu satu nilai yang sama; konversinya: sederhanakan untuk pecahan, jadikan penyebut 100 untuk persen.'};}
+function gB28e(){var combos=[[60000,3,4],[80000,1,4],[90000,2,3],[120000,5,6],[50000,3,5],[100000,7,10]];var c=pick(combos);var price=c[0],fn=c[1],fd=c[2];var bayar=price*fn/fd;
+  return {type:'steps',ask:'Harga sebuah sepeda <span class="big">Rp'+fmt(price)+'</span>. Pembeli membayar <span class="big">'+fn+'/'+fd+'</span> dari harga itu sebagai uang muka. Kerjakan dua langkah:',
+  steps:[{label:'Langkah 1 — uang muka yang dibayar (Rp)',answer:bayar},{label:'Langkah 2 — sisa yang belum dibayar (Rp)',answer:price-bayar}],
+  hints:['Uang muka = '+fn+'/'+fd+' × Rp'+fmt(price)+'. Bagi dulu: '+fmt(price)+' ÷ '+fd+' = Rp'+fmt(price/fd)+'.','Uang muka: '+fmt(price/fd)+' × '+fn+' = Rp'+fmt(bayar)+'.','Sisa: '+fmt(price)+' − '+fmt(bayar)+' = Rp'+fmt(price-bayar)+'.'],
+  sol:'Uang muka Rp'+fmt(bayar)+', sisa <b>Rp'+fmt(price-bayar)+'</b>.',
+  diag:'Pola yang sama seperti diskon dan sisa uang: pecahan × total dulu, baru kurangkan bila ditanya sisa.'};}
+
+var LESSONS_B2=[
+ {code:'B2.1',title:'Pecahan sebagai Bagian dari Keseluruhan',tags:'VIS · PG',gens:[gB21a,gB21b,gB21c,gB21d,gB21e],count:5,
+  theory:'<p>Pecahan lahir dari satu pertanyaan sederhana: <b>satu benda utuh dibagi sama besar, lalu sebagian diambil</b>. Bagi sebuah kue menjadi 4 potong sama besar dan ambil 3 — kamu memegang <b>3/4</b>. Angka di bawah (<b>penyebut</b>) menyatakan kue itu dibagi menjadi berapa potong; angka di atas (<b>pembilang</b>) menyatakan berapa potong yang diambil.</p>'
+  +'<div class="explorer"><div class="ex-title">Utak-atik: bangun pecahanmu sendiri</div><label for="exFTotal">Penyebut — dibagi jadi berapa bagian: <span id="exFTotalVal">8</span></label><input type="range" id="exFTotal" min="2" max="12" value="8"><label for="exFShaded">Pembilang — bagian terarsir: <span id="exFShadedVal">3</span></label><input type="range" id="exFShaded" min="0" max="8" value="3"><div class="fracbar" id="exFBar"></div><div class="breakdown" id="exFText"></div></div>'
+  +'<p>Syarat diam-diamnya penting: potongnya harus <b>sama besar</b>. Kue yang dipotong asal-asalan tidak bisa dibaca sebagai pecahan, karena “satu potong” tidak punya ukuran pasti. Pecahan juga bisa melebihi 1: 5/4 berarti 5 potong dari kue yang dipotong 4 — itu lebih dari satu kue utuh, dan ditulis sebagai bilangan campuran <b>1 1/4</b>.</p>'
+  +'<div class="example"><div class="ex-title">Contoh dikerjakan</div><p>Sebatang cokelat dibagi 10 ruas sama besar, dimakan 7 ruas. Bagian yang dimakan: <b>7/10</b>. Bagian yang tersisa: 3/10. Perhatikan: 7/10 + 3/10 = 10/10 = 1 batang utuh. ✓</p></div>'
+  +'<div class="keyidea"><b>Ide kunci:</b> penyebut = “dibagi berapa”, pembilang = “diambil berapa”. Pecahan bukan dua angka terpisah — ia satu nilai hasil bagi: 3/4 = 3 ÷ 4.</div>'},
+ {code:'B2.2',title:'Pecahan Senilai & Menyederhanakan',tags:'VIS · NUM',gens:[gB22a,gB22b,gB22c,gB22d,gB22e],count:5,
+  theory:'<p>1/2 pizza dan 2/4 pizza adalah jumlah pizza yang sama persis — hanya potongannya lebih kecil-kecil. Pecahan seperti ini disebut <b>senilai</b>: nilainya sama, pakaiannya beda. Cara mendapatkannya: <b>kalikan (atau bagi) pembilang dan penyebut dengan angka yang sama</b>.</p>'
+  +'<div class="explorer"><div class="ex-title">Utak-atik: 1/2 yang membesar pakaiannya</div><label for="exEqK">Kalikan pembilang &amp; penyebut dengan: <span id="exEqKVal">1</span></label><input type="range" id="exEqK" min="1" max="5" value="1"><div class="fracbar" id="exEqBar1"></div><div class="fracbar" id="exEqBar2"></div><div class="breakdown" id="exEqText"></div></div>'
+  +'<p>Arah sebaliknya disebut <b>menyederhanakan</b>: 6/8 dibagi 2/2 menjadi 3/4. Bentuk paling sederhana tercapai saat pembilang dan penyebut tidak punya faktor bersama selain 1 — cara tercepatnya, bagi keduanya dengan <b>FPB</b>-nya (ingat B1.6?). Dan jebakan abadinya: <b>menambah</b> angka yang sama TIDAK menghasilkan pecahan senilai — 1/2 ditambah 1/1 menjadi 2/3, nilainya berubah!</p>'
+  +'<div class="example"><div class="ex-title">Contoh dikerjakan</div><p>Sederhanakan 12/18. FPB(12, 18) = 6. Bagi: 12 ÷ 6 = 2, 18 ÷ 6 = 3. Hasil: <b>2/3</b>. Cek: 2/3 = 0,666… dan 12/18 = 0,666… ✓ sama.</p></div>'
+  +'<div class="keyidea"><b>Ide kunci:</b> mengali/membagi pembilang dan penyebut dengan angka yang sama = mengali pecahan dengan 1 yang menyamar (2/2, 3/3, …) — nilainya mustahil berubah.</div>'},
+ {code:'B2.3',title:'Membandingkan & Mengurutkan Pecahan',tags:'VIS · NUM',gens:[gB23a,gB23b,gB23c,gB23d,gB23e],count:5,
+  theory:'<p>Membandingkan pecahan punya tiga situasi. <b>Penyebut sama</b> — paling mudah: 5/8 vs 3/8, potongnya sama besar, yang mengambil lebih banyak potong menang: 5/8. <b>Pembilang sama</b> — jebakan: 1/3 vs 1/4. Sama-sama ambil 1 potong, tapi potong dari kue yang dibagi 3 lebih besar daripada potong dari kue yang dibagi 4. Jadi 1/3 menang — <b>penyebut besar justru pecahannya kecil</b>.</p>'
+  +'<p><b>Keduanya beda</b> — samakan penyebutnya dulu (pakai keterampilan B2.2), atau pakai <b>kali silang</b>: untuk membandingkan a/b dan c/d, bandingkan a×d dengan c×b. Contoh 3/5 vs 5/8: 3×8 = 24 vs 5×5 = 25 → 5/8 lebih besar, tipis sekali.</p>'
+  +'<div class="example"><div class="ex-title">Contoh dikerjakan</div><p>Urutkan 1/2, 2/3, 3/4. Samakan penyebut ke 12: 6/12, 8/12, 9/12. Urutan naik: <b>1/2 &lt; 2/3 &lt; 3/4</b>. Menyamakan penyebut mengubah soal pecahan menjadi soal bilangan bulat biasa.</p></div>'
+  +'<div class="keyidea"><b>Ide kunci:</b> perbandingan pecahan selalu direduksi jadi satu pertanyaan: potongnya sama besar tidak? Kalau belum, samakan dulu — lewat pecahan senilai atau kali silang.</div>'},
+ {code:'B2.4',title:'Penjumlahan & Pengurangan Pecahan',tags:'STEP · NUM',gens:[gB24a,gB24b,gB24c,gB24d,gB24e],count:5,
+  theory:'<p>Mengapa 1/4 + 2/4 = 3/4 terasa wajar, tapi penyebutnya tidak ikut jadi 8? Karena penyebut bukan jumlah — ia <b>nama ukuran potongnya</b>. Menjumlah 1 potong perempat dengan 2 potong perempat menghasilkan 3 potong perempat. Sama seperti 1 apel + 2 apel = 3 apel, bukan 3 “apel-apel”. Maka aturannya:</p>'
+  +'<div class="formula">Penyebut sama → jumlahkan/kurangkan pembilangnya saja, penyebut tetap</div>'
+  +'<p>Kalau penyebutnya beda, potongnya beda ukuran dan belum bisa digabung — samakan dulu ke KPK kedua penyebut (B1.6 lagi!). 1/2 + 1/3: samakan ke 6 → 3/6 + 2/6 = 5/6. Perhatikan hasil akhirnya selalu disederhanakan bila bisa.</p>'
+  +'<div class="example"><div class="ex-title">Contoh dikerjakan</div><p>5/6 − 1/4. KPK(6, 4) = 12. 5/6 = 10/12, 1/4 = 3/12. Kurangkan: 10/12 − 3/12 = <b>7/12</b> (sudah paling sederhana).</p></div>'
+  +'<div class="keyidea"><b>Ide kunci:</b> hanya benda seukuran yang bisa dijumlah langsung. Penyebut = ukuran, pembilang = jumlah. Itulah seluruh rahasia operasi tambah/kurang pecahan.</div>'},
+ {code:'B2.5',title:'Perkalian & Pembagian Pecahan',tags:'STEP · SALAH',gens:[gB25a,gB25b,gB25c,gB25d,gB25e],count:5,
+  theory:'<p>Kabar baik: perkalian pecahan adalah operasi pecahan paling mudah — <b>tidak perlu menyamakan penyebut</b>. Kalikan lurus: pembilang × pembilang, penyebut × penyebut. 2/3 × 3/4 = 6/12 = 1/2. Masuk akal lewat gambar luas (seperti B1.3): 2/3 dari 3/4 kue adalah daerah seluas setengah kue.</p>'
+  +'<p>Pembagian memakai satu jurus: <b>tetap, balik, kalikan</b>. 3/4 ÷ 2/5 = 3/4 × 5/2 = 15/8. Mengapa sah? Karena membagi dengan sebuah pecahan bertanya “berapa kali pecahan itu muat di sini” — dan jawabannya selalu sama dengan mengali kebalikan sang pembagi.</p>'
+  +'<div class="example"><div class="ex-title">Contoh dikerjakan</div><p>Berapa 1/2 dari 2/3 liter susu? Kata “dari” di matematika berarti kali: 1/2 × 2/3 = 2/6 = <b>1/3 liter</b>. Perkalian pecahan hampir selalu mengecilkan — lawannya intuisi bilangan bulat, dan itu wajar: kamu mengambil sebagian dari sebagian.</p></div>'
+  +'<div class="keyidea"><b>Ide kunci:</b> kali = lurus atas–atas, bawah–bawah. Bagi = balik yang kedua, lalu perlakukan sebagai kali. Dua kalimat, selesai.</div>'},
+ {code:'B2.6',title:'Desimal: Nilai Tempat & Hubungan dengan Pecahan',tags:'MATCH · NUM',gens:[gB26a,gB26b,gB26c,gB26d,gB26e],count:5,
+  theory:'<p>Desimal bukan makhluk baru — ia <b>pecahan berpenyebut 10, 100, 1000, … yang ditulis ringkas</b> memakai koma. 0,7 = 7/10. 0,75 = 75/100 = 3/4. Nilai tempat berlanjut mulus melewati koma: … ratusan, puluhan, satuan, lalu <b>persepuluhan, perseratusan, perseribuan</b> — tiap langkah ke kanan tetap dibagi 10, persis pola B1.1 yang diteruskan.</p>'
+  +'<div class="example"><div class="ex-title">Contoh dikerjakan</div><p>Angka 4 pada 3,47 bernilai 0,4 (4 persepuluh) dan angka 7 bernilai 0,07 (7 perseratus). Maka 3,47 = 3 + 0,4 + 0,07 = 347/100.</p><p>Sebaliknya: 3/8 = ? Bagi 3 ÷ 8 = 0,375. Pecahan apa pun bisa didesimalkan lewat pembagian — ada yang berhenti rapi (3/8), ada yang berulang selamanya (1/3 = 0,333…).</p></div>'
+  +'<div class="formula">1 angka di belakang koma = per 10 · 2 angka = per 100 · 3 angka = per 1000</div>'
+  +'<div class="keyidea"><b>Ide kunci:</b> koma desimal hanyalah penanda tempat satuan. Di kirinya nilai tempat membesar ×10, di kanannya mengecil ÷10 — satu garis bilangan yang tak terputus.</div>'},
+ {code:'B2.7',title:'Persen sebagai Pecahan dari 100',tags:'VIS · NUM',gens:[gB27a,gB27b,gB27c,gB27d,gB27e],count:5,
+  theory:'<p><b>Persen</b> artinya per seratus: 40% = 40/100 = 2/5. Ia bukan konsep baru, melainkan kesepakatan untuk selalu memakai penyebut yang sama — 100 — supaya semua pecahan gampang dibandingkan. 3/4 dan 5/7 susah dibandingkan sekilas; 75% dan ±71% langsung terbaca siapa lebih besar.</p>'
+  +'<div class="explorer"><div class="ex-title">Utak-atik: persen di grid 100</div><label for="exPct">Persen terarsir: <span id="exPctVal">40</span>%</label><input type="range" id="exPct" min="0" max="100" step="5" value="40"><div class="pctgrid" id="exPctGrid"></div><div class="breakdown" id="exPctText"></div></div>'
+  +'<p>Tiga konversi yang dipakai seumur hidup: persen → pecahan (tulis per 100, sederhanakan), pecahan → persen (jadikan penyebut 100), dan persen dari jumlah (persen × jumlah: 25% dari 80 = 1/4 × 80 = 20). Jangkar yang wajib hafal di luar kepala: 50% = 1/2, 25% = 1/4, 75% = 3/4, 10% = 1/10, 20% = 1/5.</p>'
+  +'<div class="keyidea"><b>Ide kunci:</b> persen = pecahan yang penyebutnya sudah diseragamkan ke 100. Semua soal persen adalah soal pecahan yang menyamar rapi.</div>'},
+ {code:'B2.8',title:'Pecahan, Desimal & Persen dalam Soal Sehari-hari',tags:'STEP',gens:[gB28a,gB28b,gB28c,gB28d,gB28e],count:5,
+  theory:'<p>Di dunia nyata, pecahan, desimal, dan persen tidak pernah datang sendirian — mereka berganti pakaian di tengah soal yang sama. Diskon 25% adalah pecahan 1/4 dari harga. Uang muka 3/5 adalah 60%. Nilai ujian 34/40 adalah 0,85 adalah 85%. Keterampilan penutup modul ini adalah <b>menerjemahkan antar bentuk di tengah soal cerita</b>.</p>'
+  +'<div class="example"><div class="ex-title">Contoh dikerjakan: tiga langkah belanja</div><p>Harga jaket Rp200.000, diskon 30%. Potongan = 30% × 200.000 = Rp60.000. Dibayar = 200.000 − 60.000 = <b>Rp140.000</b>. Jalan pintasnya: diskon 30% berarti membayar 70% → 0,7 × 200.000 = 140.000. Dua jalan, satu jawaban.</p></div>'
+  +'<p>Resep umum soal cerita di modul ini: (1) temukan <b>totalnya</b> (harga awal, uang awal, satu loyang utuh), (2) hitung <b>bagiannya</b> dengan pecahan/persen × total — bagi dengan penyebut dulu, baru kali pembilang, (3) kalau ditanya <b>sisa</b>, kurangkan dari total. Hampir semua soal B2.8 adalah variasi tiga langkah itu.</p>'
+  +'<div class="keyidea"><b>Ide kunci:</b> pilih pakaian yang paling nyaman untuk soal itu: persen untuk diskon, pecahan untuk bagian benda, desimal untuk uang dan pengukuran — nilainya tidak berubah.</div>'}
+];
+
+var MODULE_INFO={
+ B1:{title:'Bilangan & Operasi Dasar',crumb:'Modul B1',lede:'Modul pertama Matematika Interaktif. Konsepnya dilihat dan diutak-atik dulu, rumusnya datang belakangan. Semua lesson terbuka — boleh mulai dari mana saja, tidak ada yang terkunci. Angka soal diacak setiap kali latihan, jadi jawaban tidak bisa dihafal.'},
+ B2:{title:'Pecahan, Desimal & Persen',crumb:'Modul B2',lede:'Modul kedua Matematika Interaktif: pecahan sebagai bagian dari keseluruhan, lalu desimal dan persen sebagai pakaian lain dari nilai yang sama. Semua lesson terbuka — boleh mulai dari mana saja. Angka soal diacak setiap kali latihan, jadi jawaban tidak bisa dihafal.'}
+};
+var MODULE_LESSONS={B1:LESSONS,B2:LESSONS_B2};
+MODULES[0].items[1][2]=true;
+state={mod:'B1',cur:0,questions:[],answers:{},checked:{},hintLvl:{},finished:false,isUji:false,progress:{}};
+function totalParts(){var t=0;for(var k in MODULE_LESSONS)t+=MODULE_LESSONS[k].length+1;return t;}
+function curLessons(){return MODULE_LESSONS[state.mod];}
+
+function renderMap(){
+  var root=document.getElementById('mapRoot');var html='';
+  MODULES.forEach(function(g){
+    html+='<div class="lvl">'+g.lvl+'</div>';
+    g.items.forEach(function(m){
+      var active=m[2];var mod=m[0];var lessons=MODULE_LESSONS[mod];
+      var ujiP=state.progress[mod+':uji'];
+      html+='<div class="mod"><div class="mod-head"><span class="code">'+mod+'</span><span>'+m[1]+'</span>'
+        +(active?(ujiP&&ujiP.mastered?'<span class="mastered">Modul dikuasai ✓</span>':''):'<span class="soon">Segera hadir</span>')+'</div>';
+      if(active&&lessons){
+        html+='<ul class="lesson-list">';
+        lessons.forEach(function(L,i){
+          var p=state.progress[mod+':'+i];
+          html+='<li><button type="button" class="lbtn'+(state.mod===mod&&state.cur===i&&!state.isUji?' active':'')+'" data-mod="'+mod+'" data-lesson="'+i+'"><span class="num">'+(i+1)+'</span><span>'+L.title+'<span class="tags">'+L.tags+'</span></span>'+(p&&p.mastered?'<span class="st">Dikuasai ✓</span>':(p?'<span class="st" style="color:var(--ink-soft)">'+p.score+'%</span>':''))+'</button></li>';
+        });
+        html+='<li><button type="button" class="lbtn'+(state.isUji&&state.mod===mod?' active':'')+'" data-ujimod="'+mod+'"><span class="num">UJI</span><span>Uji Modul '+mod+' — 10 soal acak, tanpa petunjuk<span class="tags">UJI</span></span>'+(ujiP&&ujiP.mastered?'<span class="st">Lulus ✓</span>':(ujiP?'<span class="st" style="color:var(--ink-soft)">'+ujiP.score+'%</span>':''))+'</button></li>';
+        html+='</ul>';
+      }
+      html+='</div>';
+    });
+  });
+  root.innerHTML=html;
+  root.querySelectorAll('[data-lesson]').forEach(function(b){b.addEventListener('click',function(){loadLesson(b.getAttribute('data-mod'),+b.getAttribute('data-lesson'));});});
+  root.querySelectorAll('[data-ujimod]').forEach(function(b){b.addEventListener('click',function(){loadUji(b.getAttribute('data-ujimod'));});});
+}
+
+function wireExplorers(){
+  var slider=document.getElementById('exSlider');
+  if(slider){
+    var brk=document.getElementById('exBreak'),nl=document.getElementById('exNl');
+    var ticks='';for(var t=0;t<=1000;t+=100){ticks+='<span class="tick" style="left:'+(t/10)+'%"></span><span class="ticklab" style="left:'+(t/10)+'%">'+t+'</span>';}
+    nl.insertAdjacentHTML('beforeend',ticks+'<span class="marker" id="exMarker"></span>');
+    var marker=document.getElementById('exMarker');
+    var updNl=function(){var v=+slider.value;marker.style.left=(v/10)+'%';
+      var r=Math.floor(v/1000)*1000,h=Math.floor(v%1000/100)*100,p=Math.floor(v%100/10)*10,s=v%10;var parts=[];
+      if(r)parts.push(fmt(r));if(h)parts.push(fmt(h));if(p)parts.push(p);if(s)parts.push(s);if(!parts.length)parts.push('0');
+      brk.textContent=fmt(v)+' = '+parts.join(' + ');};
+    slider.addEventListener('input',updNl);updNl();
+  }
+  var A=document.getElementById('exA');
+  if(A){
+    var B=document.getElementById('exB'),G=document.getElementById('exGrid'),P=document.getElementById('exProd');
+    var updGrid=function(){var a=+A.value,b=+B.value;document.getElementById('exAval').textContent=a;document.getElementById('exBval').textContent=b;
+      G.style.gridTemplateColumns='repeat('+b+',1fr)';var cells='';for(var i=0;i<a*b;i++)cells+='<i></i>';G.innerHTML=cells;
+      P.textContent=a+' × '+b+' = '+(a*b)+'  ('+Array(a).fill(b).join(' + ')+' = '+(a*b)+')';};
+    A.addEventListener('input',updGrid);B.addEventListener('input',updGrid);updGrid();
+  }
+  var FT=document.getElementById('exFTotal');
+  if(FT){
+    var FS=document.getElementById('exFShaded'),FB=document.getElementById('exFBar'),FX=document.getElementById('exFText');
+    var updF=function(){var T=+FT.value,S=+FS.value;FS.max=T;if(S>T){S=T;FS.value=T;}
+      document.getElementById('exFTotalVal').textContent=T;document.getElementById('exFShadedVal').textContent=S;
+      var cells='';for(var i=0;i<T;i++)cells+='<i class="'+(i<S?'on':'')+'"></i>';FB.innerHTML=cells;
+      var s=frSimp(S,T);var note=(S===0)?'Tidak ada yang terarsir = 0.':(s[0]!==S||s[1]!==T)?' Bentuk paling sederhananya '+s[0]+'/'+s[1]+'.':'';
+      FX.textContent=S+'/'+T+' — pembilang '+S+' (terarsir), penyebut '+T+' (seluruh bagian).'+note;};
+    FT.addEventListener('input',updF);FS.addEventListener('input',updF);updF();
+  }
+  var EK=document.getElementById('exEqK');
+  if(EK){
+    var updE=function(){var k=+EK.value;document.getElementById('exEqKVal').textContent=k;
+      var c1='',c2='',i;for(i=0;i<2;i++)c1+='<i class="'+(i<1?'on':'')+'"></i>';
+      for(i=0;i<2*k;i++)c2+='<i class="'+(i<k?'on':'')+'"></i>';
+      document.getElementById('exEqBar1').innerHTML=c1;document.getElementById('exEqBar2').innerHTML=c2;
+      document.getElementById('exEqText').textContent='1/2 = '+k+'/'+(2*k)+' — batangnya sama panjang, arsirnya sama luas, hanya potongannya lebih kecil-kecil.';};
+    EK.addEventListener('input',updE);updE();
+  }
+  var EP=document.getElementById('exPct');
+  if(EP){
+    var updP=function(){var v=+EP.value;document.getElementById('exPctVal').textContent=v;
+      var cells='';for(var i=0;i<100;i++)cells+='<i class="'+(i<v?'on':'')+'"></i>';document.getElementById('exPctGrid').innerHTML=cells;
+      var s=frSimp(v,100);document.getElementById('exPctText').textContent=v+'% = '+v+'/100'+(v===0||v===100?'':' = '+s[0]+'/'+s[1]+' dalam bentuk pecahan paling sederhana')+'.';};
+    EP.addEventListener('input',updP);updP();
+  }
+}
+
+function loadLesson(a,b){
+  var mod,idx;if(typeof a==='string'){mod=a;idx=b;}else{mod=state.mod;idx=a;}
+  state.mod=mod;state.cur=idx;state.isUji=false;state.finished=false;state.answers={};state.checked={};state.hintLvl={};
+  var lessons=MODULE_LESSONS[mod];var L=lessons[idx];var info=MODULE_INFO[mod];
+  state.questions=genSet(L.gens,L.count);
+  document.getElementById('pageTitle').textContent=info.title;
+  document.getElementById('crumbMod').textContent=info.crumb;
+  document.getElementById('ledeText').textContent=info.lede;
+  document.getElementById('lessonCode').textContent=L.code;
+  document.getElementById('lessonTitle').textContent=L.title;
+  document.getElementById('practiceTitle').textContent='Latihan — cek instan';
+  var pr=document.getElementById('prereqBox');pr.style.display='block';
+  if(idx>0){pr.innerHTML='Saran jalur (bukan syarat): lesson ini lebih enak setelah <b>'+lessons[idx-1].code+' — '+lessons[idx-1].title+'</b>. Tapi silakan langsung mulai kalau mau.';}
+  else if(mod==='B2'){pr.innerHTML='Saran jalur (bukan syarat): modul ini melanjutkan <b>B1 — Bilangan &amp; Operasi Dasar</b>, terutama FPB/KPK di B1.6. Tapi silakan langsung mulai kalau mau.';}
+  else{pr.innerHTML='Titik awal jalur saran Matematika. Tetap boleh loncat ke lesson mana pun di peta.';}
+  document.getElementById('theoryRoot').innerHTML=L.theory;
+  document.getElementById('resultBox').className='result';
+  document.getElementById('finishBtn').textContent='Selesaikan Lesson';
+  wireExplorers();renderPractice();renderMap();updateOverall();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function loadUji(a){
+  var mod=(typeof a==='string')?a:state.mod;state.mod=mod;state.isUji=true;state.finished=false;state.answers={};state.checked={};state.hintLvl={};
+  var lessons=MODULE_LESSONS[mod];var info=MODULE_INFO[mod];
+  var all=[];lessons.forEach(function(L){L.gens.forEach(function(g){all.push(g);});});
+  state.questions=genSet(all,10);
+  document.getElementById('pageTitle').textContent=info.title;
+  document.getElementById('crumbMod').textContent=info.crumb;
+  document.getElementById('ledeText').textContent=info.lede;
+  document.getElementById('lessonCode').textContent='UJI '+mod;
+  document.getElementById('lessonTitle').textContent='Uji Modul '+mod;
+  document.getElementById('practiceTitle').textContent='Uji modul — 10 soal acak, tanpa petunjuk';
+  var pr=document.getElementById('prereqBox');pr.style.display='block';
+  pr.innerHTML='Uji ini mengambil soal acak dari semua lesson '+mod+' dengan angka baru. Tombol petunjuk dimatikan — seperti ujian beneran. Lulus = skor ≥ 80%.';
+  document.getElementById('theoryRoot').innerHTML='<p>Uji modul bukan gerbang — semua lesson tetap terbuka apa pun hasilnya. Anggap ini cermin: bagian mana yang sudah kokoh, bagian mana yang masih goyang.</p><div class="example"><div class="ex-title">Strategi</div><p>1. Kerjakan yang paling yakin dulu.<br>2. Pecahan: cek apakah jawabanmu sudah paling sederhana, dan apakah penyebutnya masuk akal.<br>3. Desimal ditulis dengan titik (contoh: 0.75); persen ditulis angkanya saja.</p></div><div class="keyidea"><b>Ingat:</b> skor di bawah 80% bukan vonis — peta di kiri menunjukkan lesson mana yang layak diulang, dan setiap pengulangan memberi angka soal yang baru.</div>';
+  document.getElementById('resultBox').className='result';
+  document.getElementById('finishBtn').textContent='Kumpulkan Uji';
+  renderPractice();renderMap();updateOverall();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function qHTML(q,i){
+  var h='<div class="q" id="q'+i+'"><div class="qhead"><span class="qno">Soal '+(i+1)+'</span><span class="qtype">'
+    +(q.type==='num'?'Isian numerik':q.type==='pg'?'Pilihan konsep':q.type==='steps'?'Multi-langkah':'Garis bilangan')
+    +'</span><span class="qstate" id="qs'+i+'"></span></div><p class="qask">'+q.ask+'</p>';
+  if(q.grid){h+='<div class="gridvis" style="grid-template-columns:repeat('+q.grid.b+',1fr);max-width:220px">'+Array(q.grid.a*q.grid.b).fill('<i></i>').join('')+'</div>';}
+  if(q.fracBar){h+='<div class="fracbar" aria-hidden="true">';for(var fi=0;fi<q.fracBar.total;fi++)h+='<i class="'+(fi<q.fracBar.shaded?'on':'')+'"></i>';h+='</div>';}
+  if(q.pctGrid!==undefined){h+='<div class="pctgrid" aria-hidden="true">';for(var pi=0;pi<100;pi++)h+='<i class="'+(pi<q.pctGrid?'on':'')+'"></i>';h+='</div>';}
+  if(q.type==='pg'){h+='<div class="opts" role="radiogroup">';q.options.forEach(function(o,j){h+='<button type="button" class="opt" data-q="'+i+'" data-opt="'+j+'"><span class="key">'+'ABCD'[j]+'</span><span>'+o+'</span></button>';});h+='</div>';}
+  if(q.type==='num'){h+='<div class="ansrow"><input type="'+(q.dec?'text':'number')+'" inputmode="'+(q.dec?'decimal':'numeric')+'" id="in'+i+'" aria-label="Jawaban soal '+(i+1)+'"><span style="font-size:.85rem;color:var(--ink-soft)">tekan Cek Jawaban</span></div>';}
+  if(q.type==='line'){h+='<div class="qline"><input type="range" id="in'+i+'" min="'+q.min+'" max="'+q.max+'" step="1" value="'+q.min+'" aria-label="Geser penanda garis bilangan"><div>Posisi penanda: <span class="cur" id="cur'+i+'">'+q.min+'</span> <span style="color:var(--ink-soft);font-size:.85rem">(skala '+q.min+'–'+q.max+')</span></div></div>';}
+  if(q.type==='steps'){q.steps.forEach(function(s,j){h+='<div class="stepitem"><span class="slab">'+s.label+'</span><input type="number" inputmode="numeric" id="in'+i+'_'+j+'" aria-label="'+s.label.replace(/"/g,'')+'"></div>';});}
+  h+='<div class="qactions"><button type="button" class="btn" data-check="'+i+'">Cek Jawaban</button>'
+    +(state.isUji?'':'<button type="button" class="btn ghost" data-hint="'+i+'">Petunjuk</button>')
+    +'</div><div class="hintbox" id="hint'+i+'"></div><div class="feedback" id="fb'+i+'"></div></div>';
+  return h;
+}
+function readAnswer(q,i){
+  if(q.type==='pg')return state.answers[i];
+  if(q.type==='num'||q.type==='line'){var v=document.getElementById('in'+i).value;if(v==='')return null;return +String(v).replace(',','.');}
+  if(q.type==='steps'){var arr=[];for(var j=0;j<q.steps.length;j++){var v=document.getElementById('in'+i+'_'+j).value;arr.push(v===''?null:+String(v).replace(',','.'));}return arr;}
+  return null;
+}
+function isCorrect(q,ans){
+  if(ans===null||ans===undefined)return false;
+  if(q.type==='pg')return ans===q.correct;
+  if(q.type==='num'||q.type==='line'){if(q.tol!==undefined&&q.tol!==null)return Math.abs(ans-q.answer)<=q.tol;return ans===q.answer;}
+  if(q.type==='steps')return q.steps.every(function(s,j){if(s.tol!==undefined&&s.tol!==null)return Math.abs(ans[j]-s.answer)<=s.tol;return ans[j]===s.answer;});
+  return false;
+}
+function finish(){
+  var total=state.questions.length;var answered=0,correct=0;
+  state.questions.forEach(function(q,i){var ans=readAnswer(q,i);if(ans!==null&&!(Array.isArray(ans)&&ans.indexOf(null)>=0)){answered++;if(state.checked[i]===undefined)checkQ(i);}});
+  state.questions.forEach(function(q,i){if(state.checked[i])correct++;});
+  var box=document.getElementById('resultBox');
+  if(answered<total){box.className='result show';box.innerHTML='<h3>Belum semua terjawab</h3><p>Baru '+answered+' dari '+total+' soal terisi. Isi sisanya dulu, atau tekan Cek Jawaban per soal untuk melihat pembahasan.</p>';box.scrollIntoView({behavior:'smooth',block:'center'});return;}
+  var score=Math.round(correct/total*100);
+  var usedL3=Object.keys(state.hintLvl).some(function(k){return state.hintLvl[k]>=3;});
+  var mastered=score>=80&&!usedL3;
+  var lessons=curLessons();
+  if(state.isUji){state.progress[state.mod+':uji']={score:score,mastered:score>=80};}
+  else{var key=state.mod+':'+state.cur;var prev=state.progress[key];if(!prev||score>prev.score)state.progress[key]={score:score,mastered:mastered||(prev&&prev.mastered&&score>=80)};else if(mastered)prev.mastered=true;}
+  state.finished=true;
+  box.className='result show';
+  if(state.isUji){
+    box.innerHTML='<h3>Skor uji: '+score+'% ('+correct+'/'+total+' benar)</h3><p>'+(score>=80?'Modul '+state.mod+' dinyatakan <b>dikuasai</b>. Penanda ini bahan peta progres dan antrean pengulangan berkala nanti — bukan gerbang ke mana pun.':'Belum mencapai 80%. Lihat di peta lesson mana yang skornya paling rendah, ulangi lesson itu (angkanya akan baru), lalu coba uji lagi.')+'</p><button type="button" class="btn" onclick="loadUji()">Ulangi Uji (Soal Baru)</button>';
+  }else{
+    box.innerHTML='<h3>Skor lesson: '+score+'% ('+correct+'/'+total+' benar)</h3><p>'+(mastered?'Lesson ini ditandai <b>Dikuasai</b> di peta.':score>=80&&usedL3?'Skornya lulus, tapi petunjuk lapis 3 terpakai — coba sekali lagi tanpa petunjuk penuh untuk mendapat tanda Dikuasai.':'Belum 80%. Baca lagi pembahasan soal yang salah, lalu ambil set soal baru — angkanya berubah, konsepnya sama.')+'</p><button type="button" class="btn" onclick="loadLesson(state.cur)">Ulangi Lesson (Soal Baru)</button>'+(state.cur<lessons.length-1?' <button type="button" class="btn ghost" onclick="loadLesson(state.cur+1)">Lanjut: '+lessons[state.cur+1].code+'</button>':' <button type="button" class="btn ghost" onclick="loadUji()">Ke Uji Modul '+state.mod+'</button>');
+  }
+  box.scrollIntoView({behavior:'smooth',block:'center'});
+  renderMap();updateOverall();
+}
+function updateOverall(){
+  var done=0;for(var k in MODULE_LESSONS){var ls=MODULE_LESSONS[k];for(var i=0;i<ls.length;i++){var p=state.progress[k+':'+i];if(p&&p.mastered)done++;}var u=state.progress[k+':uji'];if(u&&u.mastered)done++;}
+  var tot=totalParts();
+  document.getElementById('overallPct').textContent=done+' dari '+tot+' bagian dikuasai';
+  document.getElementById('overallBar').style.width=(done/tot*100)+'%';
+}
+
+
 document.getElementById('finishBtn').addEventListener('click',finish);
 document.getElementById('newSetBtn').addEventListener('click',function(){if(state.isUji)loadUji();else loadLesson(state.cur);});
 loadLesson(0);
